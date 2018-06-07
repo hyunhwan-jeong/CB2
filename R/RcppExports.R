@@ -5,3 +5,7 @@ quant <- function(ref_path, fastq_path) {
     .Call(`_CRISPRExpress_quant`, ref_path, fastq_path)
 }
 
+fit_ab <- function(xvec, nvec) {
+    .Call(`_CRISPRExpress_fit_ab`, xvec, nvec)
+}
+

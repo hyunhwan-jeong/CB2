@@ -5,6 +5,9 @@ using namespace std;
 // [[Rcpp::plugins(cpp11)]]
 using namespace arma;
 
+//' @importFrom Rcpp evalCpp
+//' @useDynLib CRISPRExpress
+//' @export
 // [[Rcpp::export]]
 Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
   gRNA_Reference ref(ref_path.c_str());
@@ -32,6 +35,9 @@ Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
                             Rcpp::_["count"] = sgRNA_count);
 }
 
+//' @importFrom Rcpp evalCpp
+//' @useDynLib CRISPRExpress
+//' @export
 // [[Rcpp::export]]
 Rcpp::List fit_ab(const arma::mat &xvec, const arma::mat &nvec) {
   const int R = xvec.n_rows;

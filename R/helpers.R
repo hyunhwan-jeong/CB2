@@ -1,5 +1,9 @@
 rep.row <- function(x, n) matrix(rep(x,each=n),nrow=n)
 
+#' @param lib_path 
+#'
+#' @param design 
+#'
 #' @export
 run_sgrna_quant <- function(lib_path, design) {
   # `design` has to be data.frame
@@ -13,10 +17,12 @@ run_sgrna_quant <- function(lib_path, design) {
   df_count
 }
 
-read_sgrna_mat <- function(mat_file) {
-  
-}
-
+#' @param sgcount 
+#'
+#' @param design 
+#' @param group_a 
+#' @param group_b 
+#'
 #' @importFrom magrittr %>%
 #' @export %>%
 #' @importFrom tibble tibble
@@ -45,8 +51,7 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
   est$vhat_b <- est_b$vhat
   est$cpm_a <- rowMeans(sgcount_a / nmat_a * 10^6)
   est$cpm_b <- rowMeans(sgcount_b / nmat_b * 10^6)
-  est$logFC <- log2(est$cpm_a+1) 
-  - log2(est$cpm_b+1)
+  est$logFC <- log2(est$cpm_a+1) - log2(est$cpm_b+1)
   zero_var <- 1 * ((est$vhat_a == 0) & (est$vhat_b == 0))
   eps <- .Machine$double.eps
   est$t_value <- (est$phat_b - est$phat_a) / sqrt(est$vhat_a + est$vhat_b + eps * zero_var)
@@ -65,6 +70,8 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
   est %>% arrange(sgRNA)
 }
 
+#' @param sgrna_stat 
+#'
 #' @importFrom magrittr %>%
 #' @export %>%
 #' @importFrom tibble tibble

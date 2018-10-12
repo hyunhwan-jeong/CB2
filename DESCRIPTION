@@ -1,10 +1,10 @@
-Package: CRISPRExpress
+Package: CB2
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: CRISPR pooled screen analysis using Beta-Binomial test
 Version: 1.0
-Date: 2018-06-06
-Author: Your Name
-Maintainer: Your Name <your@email.com>
+Date: 2018-10-12
+Author: Hyun-Hwan Jeong
+Maintainer: Hyun-Hwan Jeong <hyun-hwan.jeong@bcm.edu>
 Description: One paragraph description of what the package does as one or more
         full sentences.
 License: MIT

@@ -2,16 +2,16 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @importFrom Rcpp evalCpp
-#' @useDynLib CRISPRExpress
+#' @useDynLib CB2
 #' @export
 quant <- function(ref_path, fastq_path) {
-    .Call('_CRISPRExpress_quant', PACKAGE = 'CRISPRExpress', ref_path, fastq_path)
+    .Call('_CB2_quant', PACKAGE = 'CB2', ref_path, fastq_path)
 }
 
 #' @importFrom Rcpp evalCpp
-#' @useDynLib CRISPRExpress
+#' @useDynLib CB2
 #' @export
 fit_ab <- function(xvec, nvec) {
-    .Call('_CRISPRExpress_fit_ab', PACKAGE = 'CRISPRExpress', xvec, nvec)
+    .Call('_CB2_fit_ab', PACKAGE = 'CB2', xvec, nvec)
 }
 

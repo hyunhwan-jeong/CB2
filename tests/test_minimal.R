@@ -1,13 +1,13 @@
 rm(list=ls())
 FASTA <- system.file("extdata",
                      "small_sample.fasta",
-                     package = "CRISPRExpress")
+                     package = "CB2")
 df_design <- data.frame()
 for(g in c("Low", "High", "Base")) {
   for(i in 1:2) {
     FASTQ <- system.file("extdata", 
                          sprintf("%s%d.fastq", g, i), 
-                         package = "CRISPRExpress")
+                         package = "CB2")
     df_design <- rbind(df_design, data.frame(group = g, sample_name = sprintf("%s%d", g, i),fastq_path = FASTQ, stringsAsFactors = F))
   }
 }

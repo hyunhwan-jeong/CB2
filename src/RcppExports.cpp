@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // quant
 Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path);
-RcppExport SEXP _CRISPRExpress_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP) {
+RcppExport SEXP _CB2_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // fit_ab
 Rcpp::List fit_ab(const arma::mat& xvec, const arma::mat& nvec);
-RcppExport SEXP _CRISPRExpress_fit_ab(SEXP xvecSEXP, SEXP nvecSEXP) {
+RcppExport SEXP _CB2_fit_ab(SEXP xvecSEXP, SEXP nvecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -32,12 +32,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CRISPRExpress_quant", (DL_FUNC) &_CRISPRExpress_quant, 2},
-    {"_CRISPRExpress_fit_ab", (DL_FUNC) &_CRISPRExpress_fit_ab, 2},
+    {"_CB2_quant", (DL_FUNC) &_CB2_quant, 2},
+    {"_CB2_fit_ab", (DL_FUNC) &_CB2_fit_ab, 2},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_CRISPRExpress(DllInfo *dll) {
+RcppExport void R_init_CB2(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

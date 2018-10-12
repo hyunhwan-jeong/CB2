@@ -6,7 +6,7 @@ using namespace std;
 using namespace arma;
 
 //' @importFrom Rcpp evalCpp
-//' @useDynLib CRISPRExpress
+//' @useDynLib CB2
 //' @export
 // [[Rcpp::export]]
 Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
@@ -36,7 +36,7 @@ Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
 }
 
 //' @importFrom Rcpp evalCpp
-//' @useDynLib CRISPRExpress
+//' @useDynLib CB2
 //' @export
 // [[Rcpp::export]]
 Rcpp::List fit_ab(const arma::mat &xvec, const arma::mat &nvec) {

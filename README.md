@@ -1,7 +1,7 @@
 ## What is CB<sup>2</sup>
 
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for deconvoluting CRISPR data based on beta-binomial distribution. 
-We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are implemented in [CRISPRCloud](http://crispr.nrihub.org/)
+We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are implemented in [CRISPRCloud](http://crispr.nrihub.org/).
 
 ## How to install
 

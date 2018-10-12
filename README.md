@@ -21,7 +21,13 @@ for(g in c("Low", "High", "Base")) {
     FASTQ <- system.file("extdata", 
                          sprintf("%s%d.fastq", g, i), 
                          package = "CB2")
-    df_design <- rbind(df_design, data.frame(group = g, sample_name = sprintf("%s%d", g, i),fastq_path = FASTQ, stringsAsFactors = F))
+    df_design <- rbind(df_design, 
+      data.frame(
+        group = g, 
+        sample_name = sprintf("%s%d", g, i),
+        fastq_path = FASTQ, 
+        stringsAsFactors = F)
+      )
   }
 }
 

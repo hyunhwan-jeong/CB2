@@ -6,7 +6,7 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 ## How to install
 
 ```{r}
-devtools::install_github("CB2")
+devtools::install_github("hyunhwaj/CB2")
 ```
 
 ## How to run CB<sup>2</sup>

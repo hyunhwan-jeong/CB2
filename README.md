@@ -12,7 +12,6 @@ devtools::install_github("hyunhwaj/CB2")
 ## How to run CB<sup>2</sup>
 
 ```{r}
-rm(list=ls())
 FASTA <- system.file("extdata",
                      "small_sample.fasta",
                      package = "CB2")

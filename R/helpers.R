@@ -51,6 +51,11 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
   est$vhat_b <- est_b$vhat
   est$cpm_a <- rowMeans(sgcount_a / nmat_a * 10^6)
   est$cpm_b <- rowMeans(sgcount_b / nmat_b * 10^6)
+  
+  # if `ncol(sgcount_a)`` or `nocl(sgcount_b)` are 1, `vhat_a`` or `vhat_b`` will only contain `na`. In this case we need to treat all the `na` values as 0 for further procedure.
+  est$vhat_a[is.na(est$vhat_a)] <- 0
+  est$vhat_b[is.na(est$vhat_b)] <- 0
+  
   est$logFC <- log2(est$cpm_a+1) - log2(est$cpm_b+1)
   zero_var <- 1 * ((est$vhat_a == 0) & (est$vhat_b == 0))
   eps <- .Machine$double.eps
@@ -88,9 +93,9 @@ measure_gene_stats <-
         cpm_a = mean(cpm_a),
         cpm_b = mean(cpm_b),
         logFC = mean(logFC),
-        p_ts = metap::sumlog(p_ts)$p,
-        p_pa = metap::sumlog(p_pa)$p,
-        p_pb = metap::sumlog(p_pb)$p
+        p_ts = ifelse( n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
+        p_pa = ifelse( n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
+        p_pb = ifelse( n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
       ) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(

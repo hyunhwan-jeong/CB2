@@ -1,0 +1,87 @@
+---
+title: "CB2 Vignette"
+output: html_document
+---
+
+CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA abundances, and minimizing the parameters necessary for CRISPR pooled screen data analysis. In this documents, we will learn how to use CB2 for the CRISPR pooled screen data analysis.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First, import `CB2` package using `library()`, and it will be helpful to import `tidyverse` (for handling data frame) and `glue` (for file name handling).
+
+```{r}
+library(CB2)
+library(tidyverse)
+library(glue)
+```
+
+There are three different basic functions in CB<sup>2</sup>. The first one is the quantification of counts of sgRNAs from the NGS samples. It needs a library file (`.fasta` or `.fa`) and a list of samples (`.fastq`). The library file contains an annotation of sgRNAs in the library used in the screening. A sgRNA annotation consists of a barcode (20nt sequence where sgRNA would target) and a name of a gene which the sgRNA will target. Let's load examples of the required files from `CB2` package.
+
+```{r}
+# load the file path of the annotation file.
+FASTA <- system.file("extdata", "toydata",
+                     "small_sample.fasta",
+                     package = "CB2")
+system("tail -6 {FASTA}" %>% glue)
+```
+
+The first two lines of the annotation file indicate the annotation of the first sgRNA, and the next two lines are the annotation of the second sgRNA, and so on. The first line of an annotation is formatted as `><genename>_<id>`, where `<genename>` is an id of a symbol of the target gene for the sgRNA and `<id>` is the unique identifier for the sgRNA. `><genename>_<id>` is the completed identifier of the sgRNA and a completed identifier should not appear more than once. The second line of an annotation is the 20nt sequence, and it indicates which part of the target gene will be targeted by the sgRNA. 
+
+The first annotation reveals the library contains a sgRNA and `RAB_3` is the identifier of the sgRNA. This sgRNA is supposed to target `RAB` gene and the intended target locus is `CTGTAGAAGCTACATCGGCT`
+
+We also have an example of the NGS sample file. Below chunk will show the contents of a NGS sample file.
+
+```{r}
+FASTQ <- system.file("extdata", "toydata",
+                     "Base1.fastq",
+                     package = "CB2")
+system("head -8 {FASTQ}" %>% glue)
+```
+
+The NGS sample file contains multiple reads, and each read consists of four sequential lines. The first line is the id of the reads, and the second line contains a sequence of the read, and we assume that a read contains a sequence of the sgRNA as a substring of the read. the third line only contains '+' and the last line contains the quality of each nucleotide of the read ([Phread quality score](https://en.wikipedia.org/wiki/FASTQ_format)).
+
+
+Let's get start the analysis. Before run the analysis we will see the list of `FASTQ` files we can use from the `toydata` example.
+
+```{r}
+ex_path <- system.file("extdata", "toydata", package = "CB2")
+Sys.glob("{ex_path}/*.fastq" %>% glue)
+```
+
+From the above example, we can see there are three groups in the example (Base, High, and Low), and each of them has two replicates. We will perform an analysis between `Base` and `High`. The first thing we need to do is creating a design matrix. The below code shows how to create it.
+
+```{r}
+df_design <- tribble(
+  ~group, ~sample_name,
+  "Base", "Base1",  
+  "Base", "Base2", 
+  "High", "High1",
+  "High", "High2"
+) %>% mutate(
+  fastq_path = glue("{ex_path}/{sample_name}.fastq")
+)
+
+df_design
+```
+
+`df_design` contains three columns and each row contains information of a sample. The first column is `group` where the sample belongs to, and the `sample_name` is the name of the sample for a convenience. `fastq_path` is the place where you will have the NGS sample file.
+
+After create the `df_design`, and we can run a sgRNA quantification like below:
+
+```{r}
+sgrna_count <- run_sgrna_quant(FASTA, df_design)
+```
+
+```{r}
+head(sgrna_count)
+```
+
+After running `run_sgrna_quant`, we will have a `data.frame` contains sgRNA counts for each sample. Each value will indicate how many sgRNA were counted from the function, and we can assume a number of will be used to approximate the number of the cells which a gene within the cell is knocked out by the sgRNA in the pool of the sample.
+
+We are also able to lookup CPM using `get_CPM`
+```{r}
+get_CPM(sgrna_count)
+```
+

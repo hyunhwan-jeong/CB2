@@ -5,9 +5,17 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ## How to install
 
+Currently CB<sup>2</sup> is not on `CRAN`, but we plan to submit the package to `CRAN` soon. Installation of CB<sup>2</sup> can be done using below two lines of code in your R terminal.
+
 ```r
-install.package("devtools")
+install.packages("devtools")
 devtools::install_github("hyunhwaj/CB2")
+```
+
+Or, here is a one-liner command line for the installation
+
+```
+Rscript -e "install.packages('devtools'); devtools::install_github('LiuzLab/CB2')"
 ```
 
 ## A simple example how to use CB<sup>2</sup> in R

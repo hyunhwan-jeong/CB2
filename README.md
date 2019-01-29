@@ -6,10 +6,11 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 ## How to install
 
 ```r
+install.package("devtools")
 devtools::install_github("hyunhwaj/CB2")
 ```
 
-## How to run CB<sup>2</sup>
+## A simple example how to use CB<sup>2</sup> in R
 
 ```r
 FASTA <- system.file("extdata",

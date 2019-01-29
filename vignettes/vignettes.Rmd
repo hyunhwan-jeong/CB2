@@ -1,6 +1,8 @@
 ---
 title: "CB2 Vignette"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA abundances, and minimizing the parameters necessary for CRISPR pooled screen data analysis. In this documents, we will learn how to use CB2 for the CRISPR pooled screen data analysis.
@@ -58,7 +60,7 @@ df_design <- tribble(
   "Base", "Base1",  
   "Base", "Base2", 
   "High", "High1",
-  "High", "High2"
+#  "High", "High2"
 ) %>% mutate(
   fastq_path = glue("{ex_path}/{sample_name}.fastq")
 )
@@ -71,17 +73,102 @@ df_design
 After create the `df_design`, and we can run a sgRNA quantification like below:
 
 ```{r}
-sgrna_count <- run_sgrna_quant(FASTA, df_design)
+cb2_count <- run_sgrna_quant(FASTA, df_design)
 ```
 
 ```{r}
-head(sgrna_count)
+head(cb2_count$count)
 ```
 
-After running `run_sgrna_quant`, we will have a `data.frame` contains sgRNA counts for each sample. Each value will indicate how many sgRNA were counted from the function, and we can assume a number of will be used to approximate the number of the cells which a gene within the cell is knocked out by the sgRNA in the pool of the sample.
+After running `run_sgrna_quant`, we will have a `data.frame` (`cb2_count$count`) contains sgRNA counts for each sample and a vector contains the number of reads for each sample (`cb2_count$total`). Each value will indicate how many sgRNA were counted from the function, and we can assume a number of will be used to approximate the number of the cells which a gene within the cell is knocked out by the sgRNA in the pool of the sample.
 
-We are also able to lookup CPM using `get_CPM`
 ```{r}
-get_CPM(sgrna_count)
+head(cb2_count$total)
 ```
 
+We are also able to lookup CPM using `get_CPM`.
+```{r}
+get_CPM(cb2_count$count)
+```
+
+There is two functions we can use for quality check. The first function (`plot_count_distribution`) shows the mappability (the success rate of sgRNA identification from reads) for each sample.
+```{r}
+plot_count_distribution(cb2_count$count %>% get_CPM, df_design)
+```
+
+You can also check the mappability (The proportion of the number read contains a valid sgRNA sequence among entire reads) using `calc_mappability` function.
+
+```{r}
+calc_mappability(cb2_count, df_design)
+```
+
+`plot_PCA` is can be a way of checking data quality.
+
+```{r}
+plot_PCA(cb2_count$count %>% get_CPM, df_design)
+```
+
+After we realize the data quality is okay to move to the next step, then we can perform an analysis for a sgRNA-level using `
+
+```{r}
+sgrna_stat <- run_estimation(cb2_count$count, df_design, "High", "Base")
+sgrna_stat
+```
+
+As you can see above, we need four different parameters for the function. The first is a matrix of the read count, and the second parameter is the design data frame. The last two are the groups we are interested to perform differential abundance test for each sgRNA.
+
+Here is the information of each column in the data.frame of the sgRNA-level statistics:
+
+* `sgRNA`: The sgRNA identifier.
+* `gene`: The gene is the target of the sgRNA 
+* `n_a`: The number of replicates of the first group.
+* `n_b`: The number of replicates of the second group.
+* `phat_a`: The proportion value of the sgRNA for the first group.
+* `phat_b`: The proportion value of the sgRNA for the second group.
+* `vhat_a`: The variance of the sgRNA for the first group.
+* `vhat_b`: The variance of the sgRNA for the second group.
+* `cpm_a`: The mean CPM of the sgRNA within the first group.
+* `cpm_b`: The mean CPM of the sgRNA within the second group.
+* `logFC`: The log fold change of sgRNA between two groups, and calculated by $log_{2}\frac{CPM_{a}+1}{CPM_{b}+1}$
+* `t_value`: The value for the t-statistics.
+* `df`: The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
+* `p_ts`: The p-value indicates a difference between the two groups.
+* `p_pa`: The p-value indicates enrichment of the first group.
+* `p_pb`: The p-value indicates enrichment of the second group.
+* `fdr_ts`: The adjusted P-value of `p_ts`.
+* `fdr_pa`: The adjusted P-value of `p_pa`.
+* `fdr_pb`: The adjusted P-value of `p_pb`.
+
+Once we are done with the sgRNA-level statistics, we can perform a gene-level test using `measure_gene_stats`.
+
+```{r}
+gene_stats <- measure_gene_stats(sgrna_stat)
+gene_stats
+```
+
+Here is the information of each column in the data.frame of the gene-level statistics:
+
+* `gene`: Theg gene name to be tested.
+* `n_sgrna`: The number of sgRNA targets the gene in the library.
+* `cpm_a`: The mean of CPM of sgRNAs within the first group.
+* `cpm_b`: The mean of CPM of sgRNAs within the second group.
+* `logFC`: The log fold change of the gene between two groups, and calculated by $log_{2}\frac{CPM_{a}+1}{CPM_{b}+1}$
+* `p_ts`: The p-value indicates a difference between the two groups at the gene-level.
+* `p_pa`: The p-value indicates enrichment of the first group at the gene-level.
+* `p_pb`: The p-value indicates enrichment of the second group at the gene-level.
+* `fdr_ts`: The adjusted P-value of `p_ts`.
+* `fdr_pa`: The adjusted P-value of `p_pa`.
+* `fdr_pb`: The adjusted P-value of `p_pb`.
+
+After we have a result of the gene-level test, we can filter out a list of genes using different measures. For example, if you are considering to find genes has a differential abundance between two groups, you can use the value `fdr_ts` for the hit selection. If you want to see some genes has enrichment of abundance in the first group (i.e. depiction in the opposite group), you lookup `fdr_pa` value, and `fdr_pb` can be used to see an enrichment of abundance in the second group. Here, we use `fdr_ts` to identify the hit genes.
+
+```{r}
+gene_stats %>% 
+  filter(fdr_ts < 0.1)
+```
+
+CB<sup>2</sup> also supports a useful dotplot function to lookup the read counts for a gene, and this function can be used to clarify an iteresting hit is valid.
+
+```{r}
+plot_dotplot(cb2_count$count, df_design, "PARK2")
+```

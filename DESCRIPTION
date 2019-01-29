@@ -14,7 +14,11 @@ Imports:
     magrittr,
     dplyr,
     tibble,
-    stringr
+    stringr,
+    tibble,
+    ggplot2,
+    tidyr,
+    glue
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: testthat
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

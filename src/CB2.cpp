@@ -20,8 +20,9 @@ Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
   }
   
   const int N = sgRNA_name.size();
-  Rcpp::NumericMatrix sgRNA_count(N, fastq_path.size());
-
+  const int M = fastq_path.size();
+  Rcpp::NumericMatrix sgRNA_count(N, M);
+  Rcpp::NumericVector total_read_count(M);
   int j = 0;
   for(auto &f : fastq_path) {
     sgRNA_MAP smap(ref);
@@ -29,10 +30,12 @@ Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
     for(int i = 0; i < N ; ++i) {
       sgRNA_count(i,j) = smap.cnt[sgRNA_hash[i]];
     }
+    total_read_count(j) = smap.num_proc_line;
     j++;
   }
   return Rcpp::List::create(Rcpp::_["sgRNA"] = sgRNA_name, 
-                            Rcpp::_["count"] = sgRNA_count);
+                            Rcpp::_["count"] = sgRNA_count,
+                            Rcpp::_["total"] = total_read_count);
 }
 
 //' @importFrom Rcpp evalCpp

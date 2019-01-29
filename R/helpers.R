@@ -14,7 +14,9 @@ run_sgrna_quant <- function(lib_path, design) {
   df_count <- as.data.frame(quant_ret$count)
   rownames(df_count) <- quant_ret$sgRNA
   colnames(df_count) <- design$sample_name
-  df_count
+  total <- quant_ret$total
+  names(total) <- design$sample_name
+  list(count = df_count, total = total)
 }
 
 #' @param sgcount 
@@ -31,15 +33,15 @@ run_sgrna_quant <- function(lib_path, design) {
 #' @export arrange
 #' @export
 run_estimation <- function(sgcount, design, group_a, group_b) {
-  group_a <- design$sample_name[design$group == group_a]
-  group_b <- design$sample_name[design$group == group_b]
+  group_a <- which(design$group == group_a)
+  group_b <- which(design$group == group_b)
   sgcount_a <- as.matrix(sgcount[,group_a])
   sgcount_b <- as.matrix(sgcount[,group_b])
   nmat_a <- rep.row(colSums(sgcount_a), nrow(sgcount_a))
   nmat_b <- rep.row(colSums(sgcount_b), nrow(sgcount_b))
   est_a <- fit_ab(sgcount_a, nmat_a)
   est_b <- fit_ab(sgcount_b, nmat_b)
-  
+
   # if you have gene colum then get read of this part
   est <- tibble(sgRNA = rownames(sgcount))
   est$gene <- stringr::str_split(est$sgRNA, "_", simplify=T)[,1]
@@ -56,7 +58,7 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
   est$vhat_a[is.na(est$vhat_a)] <- 0
   est$vhat_b[is.na(est$vhat_b)] <- 0
   
-  est$logFC <- log2(est$cpm_a+1) - log2(est$cpm_b+1)
+  est$logFC <- log2(est$cpm_b+1) - log2(est$cpm_a+1)
   zero_var <- 1 * ((est$vhat_a == 0) & (est$vhat_b == 0))
   eps <- .Machine$double.eps
   est$t_value <- (est$phat_b - est$phat_a) / sqrt(est$vhat_a + est$vhat_b + eps * zero_var)

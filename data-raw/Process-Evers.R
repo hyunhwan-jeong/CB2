@@ -1,4 +1,5 @@
 library(tidyverse)
+library(CB2)
 Evers_CRISPRn_RT112 <- list()
 Evers_CRISPRn_RT112$count <- 
   read_csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/data/Evers/CRISPRn-RT112.csv") %>% 
@@ -19,4 +20,6 @@ Evers_CRISPRn_RT112$design <-
     "after", "A3"
   )
 
-usethis::use_data(Evers_CRISPRn_RT112)
+Evers_CRISPRn_RT112$sg_stat <- run_estimation(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
+Evers_CRISPRn_RT112$gene_stat <- measure_gene_stats(Evers_CRISPRn_RT112$sg_stat)
+usethis::use_data(Evers_CRISPRn_RT112, overwrite = T)

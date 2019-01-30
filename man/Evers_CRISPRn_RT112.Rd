@@ -3,21 +3,24 @@
 \docType{data}
 \name{Evers_CRISPRn_RT112}
 \alias{Evers_CRISPRn_RT112}
-\title{Prices of 50,000 round cut diamonds.}
-\format{A data frame with 53940 rows and 10 variables:
+\title{A benchmark CRISPRn pooled screen data from Evers et al.}
+\format{The data object is a list and contains below information:
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
+  \item{count}{The count matrix from Evers et al.'s paper and contains the CRISPRn screening result using RT112 cell-line.
+    It contains three different replicates for T0 (before) and contains different three replicates for T1 (after).}
+  \item{egenes}{The list of 46 essential genes used in Evers et al.'s study.}
+  \item{ngenes}{The list of 47 non-essential genes used in Evers et al.'s study.}
+  \item{design}{The data.frame contains study design.}
+  \item{sg_stat}{The data.frame contains the sgRNA-level statistics.}
+  \item{gene_stat}{The data.frame contains the gene-level statistics.}
 }}
 \source{
-\url{http://www.diamondse.info/}
+\url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
 }
 \usage{
 Evers_CRISPRn_RT112
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
-diamonds.
+A benchmark CRISPRn pooled screen data from Evers et al.
 }
 \keyword{datasets}

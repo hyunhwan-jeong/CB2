@@ -59,8 +59,8 @@ struct sgRNA_MAP {
     long long mod = 1LL<<(2*ref.lib_seq_len);
     const int rc[] = {2, 3, 0, 1};
     string msg;	
-    cerr << "Detects the length of guided RNA is " << ref.lib_seq_len << endl;
-    cerr << ref.lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+    Rcpp::Rcerr << "Detects the length of guided RNA is " << ref.lib_seq_len << endl;
+    Rcpp::Rcerr << ref.lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
 
     ifstream inp(f_seq);
     
@@ -68,8 +68,8 @@ struct sgRNA_MAP {
       if(num_line++%4!=1) continue;
       tot_reads_len += line.size();
       if(++num_proc_line%int(1e6)==0) {
-        cerr << "Processing " << num_proc_line << "lines..." << endl;
-        cerr << "Current mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
+        Rcpp::Rcerr << "Processing " << num_proc_line << "lines..." << endl;
+        Rcpp::Rcerr << "Current mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
       }
       int cur_len = 0;
       long long num = 0;
@@ -126,7 +126,7 @@ struct sgRNA_MAP {
       }
       reverse(line.begin(), line.end());
     }
-    cerr << "All " << num_proc_line << " were proceed!" << endl;
+    Rcpp::Rcerr << "All " << num_proc_line << " were proceed!" << endl;
     inp.close();
     
     if(num_hits < num_hits_rc) {

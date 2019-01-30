@@ -5,6 +5,11 @@ using namespace std;
 // [[Rcpp::plugins(cpp11)]]
 using namespace arma;
 
+//' A C++ function to quantify sgRNA abudnacen from NGS samples
+//'
+//' @param ref_path the path of the annotation file, and it has to be a FASTA formmated file.
+//' @param fastq_path a list of paths of the FASTQ files.
+//'
 //' @importFrom Rcpp evalCpp
 //' @useDynLib CB2
 //' @export
@@ -38,6 +43,13 @@ Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path) {
                             Rcpp::_["total"] = total_read_count);
 }
 
+//' A C++ function to perform a parameter estimation for the sgRNA-level test. 
+//' It will estimate two different parameters `phat` and `vhat`,
+//' and we believe input count data follows the beta-binomial distribution.
+//' 
+//' @param xvec a matrix contains sgRNA read counts.
+//' @param nvec a vector contains the library size.
+//' 
 //' @importFrom Rcpp evalCpp
 //' @useDynLib CB2
 //' @export

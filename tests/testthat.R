@@ -1,4 +1,4 @@
 library(testthat)
-library(CRISPRExpress)
+library(CB2)
 
-test_check("CRISPRExpress")
+test_check("CB2")

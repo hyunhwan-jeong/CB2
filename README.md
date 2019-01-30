@@ -21,13 +21,13 @@ Rscript -e "install.packages('devtools'); devtools::install_github('LiuzLab/CB2'
 ## A simple example how to use CB<sup>2</sup> in R
 
 ```r
-FASTA <- system.file("extdata",
+FASTA <- system.file("extdata", "toydata",
                      "small_sample.fasta",
                      package = "CB2")
 df_design <- data.frame()
 for(g in c("Low", "High", "Base")) {
   for(i in 1:2) {
-    FASTQ <- system.file("extdata", 
+    FASTQ <- system.file("extdata", "toydata",
                          sprintf("%s%d.fastq", g, i), 
                          package = "CB2")
     df_design <- rbind(df_design, 
@@ -41,7 +41,7 @@ for(g in c("Low", "High", "Base")) {
 }
 
 sgrna_count <- run_sgrna_quant(FASTA, df_design)
-sgrna_stat <- run_estimation(sgrna_count, df_design, "Base", "Low")
+sgrna_stat <- run_estimation(sgrna_count$count, df_design, "Base", "Low")
 gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```

@@ -41,7 +41,7 @@ for(g in c("Low", "High", "Base")) {
 }
 
 sgrna_count <- run_sgrna_quant(FASTA, df_design)
-sgrna_stat <- run_estimation(sgrna_count, df_design, "Base", "Low")
+sgrna_stat <- run_estimation(sgrna_count$count, df_design, "Base", "Low")
 gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```

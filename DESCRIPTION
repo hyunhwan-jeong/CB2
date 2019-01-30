@@ -21,6 +21,10 @@ Imports:
     tidyr,
     glue
 LinkingTo: Rcpp, RcppArmadillo
-Suggests: testthat
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+VignetteBuilder: knitr

@@ -1,13 +1,14 @@
 ---
 title: "CB2 Tutorial"
+author: "Hyun-Hwan Jeong"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-  
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
+
 
 CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA abundances, and minimizing the parameters necessary for CRISPR pooled screen data analysis. In this documents, we will learn how to use CB2 for the CRISPR pooled screen data analysis.
 

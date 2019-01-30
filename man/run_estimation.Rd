@@ -7,16 +7,16 @@
 run_estimation(sgcount, design, group_a, group_b)
 }
 \arguments{
-\item{sgcount}{A data.frame contains}
+\item{sgcount}{A table contains}
 
-\item{design}{A data.frame contains study design. It has to contain `group`}
+\item{design}{A table contains study design. It has to contain `group`}
 
 \item{group_a}{The first group to be in the test.}
 
 \item{group_b}{The second group to be in the test.}
 }
 \value{
-a data.frame contains the sgRNA-level test result, and the data.frame contains these columns: 
+a table contains the sgRNA-level test result, and the table contains these columns: 
 \itemize{
  \item `sgRNA`: The sgRNA identifier.
  \item `gene`: The gene is the target of the sgRNA 
@@ -28,7 +28,7 @@ a data.frame contains the sgRNA-level test result, and the data.frame contains t
  \item `vhat_b`: The variance of the sgRNA for the second group.
  \item `cpm_a`: The mean CPM of the sgRNA within the first group.
  \item `cpm_b`: The mean CPM of the sgRNA within the second group.
- \item `logFC`: The log fold change of sgRNA between two groups
+ \item `logFC`: The log fold change of sgRNA between two groups.
  \item `t_value`: The value for the t-statistics.
  \item `df`: The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
  \item `p_ts`: The p-value indicates a difference between the two groups.

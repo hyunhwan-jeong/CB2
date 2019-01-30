@@ -9,7 +9,7 @@ plot_dotplot(sgcount, df_design, gene)
 \arguments{
 \item{sgcount}{The input matrix contains read counts of sgRNAs for each sample.}
 
-\item{df_design}{The data.frame contains a study design.}
+\item{df_design}{The table contains a study design.}
 
 \item{gene}{The gene to be visualzed.}
 }

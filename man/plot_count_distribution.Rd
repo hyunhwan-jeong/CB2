@@ -9,7 +9,7 @@ plot_count_distribution(sgcount, df_design)
 \arguments{
 \item{sgcount}{The input matrix contains read counts of sgRNAs for each sample.}
 
-\item{df_design}{The data.frame contains a study design.}
+\item{df_design}{The table contains a study design.}
 }
 \value{
 A ggplot object contains a read count distribution plot for `sgcount`.

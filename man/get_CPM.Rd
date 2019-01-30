@@ -7,12 +7,12 @@
 get_CPM(sgcount)
 }
 \arguments{
-\item{sgcount}{The input data.frame contains read countss of sgRNAs for each sample
+\item{sgcount}{The input table contains read countss of sgRNAs for each sample
 
 A function to calculate the CPM (Counts Per Million) (required)}
 }
 \value{
-a normalized CPM data.frame will be returned
+a normalized CPM table will be returned
 }
 \description{
 A function to normalize sgRNA read counts.

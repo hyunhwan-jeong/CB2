@@ -9,9 +9,7 @@ plot_PCA(sgcount, df_design)
 \arguments{
 \item{sgcount}{The input matrix contains read countss of sgRNAs for each sample.}
 
-\item{df_design}{The data.frame contains a study design.
-
-This function will perfrom a principal component analysis, and it returns a ggplot object of the PCA plot.}
+\item{df_design}{The table contains a study design.}
 }
 \value{
 A ggplot object contains a PCA plot for the input.
@@ -21,5 +19,5 @@ data(Evers_CRISPRn_RT112)
 plot_PCA(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design)
 }
 \description{
-A function to plot the first two PCA of samples.
+This function will perfrom a principal component analysis, and it returns a ggplot object of the PCA plot.
 }

@@ -9,11 +9,11 @@ run_sgrna_quant(lib_path, design)
 \arguments{
 \item{lib_path}{The path of annotation file.}
 
-\item{design}{A data.frame contains study design. It has to contain `fastq_path` and `sample_name`.}
+\item{design}{A table contains study design. It has to contain `fastq_path` and `sample_name`.}
 }
 \value{
 It will return a list, and the list contains two elements. 
-  The first elements (`count`) is a data.frame contains the result of the quantification for each sample. 
+  The first elements (`count`) is a table contains the result of the quantification for each sample. 
   The second elements (`total`) is a vector contains the total number of reads of each sample.
 }
 \description{

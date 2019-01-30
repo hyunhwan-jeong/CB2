@@ -21,13 +21,13 @@ Rscript -e "install.packages('devtools'); devtools::install_github('LiuzLab/CB2'
 ## A simple example how to use CB<sup>2</sup> in R
 
 ```r
-FASTA <- system.file("extdata",
+FASTA <- system.file("extdata", "toydata",
                      "small_sample.fasta",
                      package = "CB2")
 df_design <- data.frame()
 for(g in c("Low", "High", "Base")) {
   for(i in 1:2) {
-    FASTQ <- system.file("extdata", 
+    FASTQ <- system.file("extdata", "toydata",
                          sprintf("%s%d.fastq", g, i), 
                          package = "CB2")
     df_design <- rbind(df_design, 

@@ -1,7 +1,7 @@
 context("Check whether it works")
 
 library(CB2)
-library(tidyverse)
+
 FASTA <- system.file("extdata",
                      "toydata", "small_sample.fasta",
                      package = "CB2")

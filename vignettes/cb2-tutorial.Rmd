@@ -16,12 +16,15 @@ CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hyp
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-First, import `CB2` package using `library()`, and it will be helpful to import `tidyverse` (for handling data frame) and `glue` (for file name handling).
+First, import `CB2` package using `library()`, and it will be helpful to import other packages like below:
 
 ```{r}
 library(CB2)
-library(tidyverse)
+library(magrittr)
 library(glue)
+library(tibble)
+library(dplyr)
+library(ggplot2)
 ```
 
 There are three different basic functions in CB<sup>2</sup>. The first one is the quantification of counts of sgRNAs from the NGS samples. It needs a library file (`.fasta` or `.fa`) and a list of samples (`.fastq`). The library file contains an annotation of sgRNAs in the library used in the screening. A sgRNA annotation consists of a barcode (20nt sequence where sgRNA would target) and a name of a gene which the sgRNA will target. Let's load examples of the required files from `CB2` package.

@@ -52,4 +52,4 @@ gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```
 
-More detailed tutorial is available [here](http://htmlpreview.github.io/?https://github.com/Liuzlab/CB2/blob/master/inst/doc/cb2-tutorial.html)!
+More detailed tutorial is available [here](https://cran.r-project.org/web/packages/CB2/vignettes/cb2-tutorial.html)!

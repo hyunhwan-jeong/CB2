@@ -2,22 +2,22 @@
 % Please edit documentation in R/helpers.R
 \name{run_sgrna_quant}
 \alias{run_sgrna_quant}
-\title{A function to run a sgRA qunatification algorithm from NGS samples}
+\title{A function to run a sgRNA quantification algorithm from NGS sample}
 \usage{
 run_sgrna_quant(lib_path, design)
 }
 \arguments{
-\item{lib_path}{The path of annotation file.}
+\item{lib_path}{The path of the annotation file.}
 
-\item{design}{A table contains study design. It has to contain `fastq_path` and `sample_name`.}
+\item{design}{A table contains the study design. It must contain `fastq_path` and `sample_name.`}
 }
 \value{
 It will return a list, and the list contains two elements. 
-  The first elements (`count`) is a table contains the result of the quantification for each sample. 
-  The second elements (`total`) is a vector contains the total number of reads of each sample.
+  The first element (`count`) is a data frame contains the result of the quantification for each sample. 
+  The second element (`total`) is a numeric vector contains the total number of reads of each sample.
 }
 \description{
-A function to run a sgRA qunatification algorithm from NGS samples
+A function to run a sgRNA quantification algorithm from NGS sample
 }
 \examples{
 library(CB2)

@@ -2,22 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{plot_PCA}
 \alias{plot_PCA}
-\title{A function to plot the first two PCA of samples.}
+\title{A function to plot the first two principal components of samples.}
 \usage{
 plot_PCA(sgcount, df_design)
 }
 \arguments{
-\item{sgcount}{The input matrix contains read countss of sgRNAs for each sample.}
+\item{sgcount}{The input matrix contains read counts of sgRNAs for each sample.}
 
 \item{df_design}{The table contains a study design.}
 }
 \value{
-A ggplot object contains a PCA plot for the input.
+A ggplot2 object contains a PCA plot for the input.
 
 library(CB2)
 data(Evers_CRISPRn_RT112)
 plot_PCA(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design)
 }
 \description{
-This function will perfrom a principal component analysis, and it returns a ggplot object of the PCA plot.
+This function will perform a principal component analysis, and it returns a ggplot object of the PCA plot.
 }

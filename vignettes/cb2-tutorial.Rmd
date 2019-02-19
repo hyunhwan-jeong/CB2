@@ -4,19 +4,19 @@ author: "Hyun-Hwan Jeong"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{CB2 Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 
-CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA abundances, and minimizing the parameters necessary for CRISPR pooled screen data analysis. In this documents, we will learn how to use CB2 for the CRISPR pooled screen data analysis.
+CRISPRBetaBinomial (CB<sup>2</sup>) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA abundances, and minimizing the parameters necessary for CRISPR pooled screen data analysis. This document shows how to use CB2 for the CRISPR pooled screen data analysis.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-First, import `CB2` package using `library()`, and it will be helpful to import other packages like below:
+First, import `CB2` package using `library(),` and it will be helpful to import other packages as follows:
 
 ```{r}
 library(CB2)
@@ -27,7 +27,9 @@ library(dplyr)
 library(ggplot2)
 ```
 
-There are three different basic functions in CB<sup>2</sup>. The first one is the quantification of counts of sgRNAs from the NGS samples. It needs a library file (`.fasta` or `.fa`) and a list of samples (`.fastq`). The library file contains an annotation of sgRNAs in the library used in the screening. A sgRNA annotation consists of a barcode (20nt sequence where sgRNA would target) and a name of a gene which the sgRNA will target. Let's load examples of the required files from `CB2` package.
+There are three different basic functions in CB<sup>2</sup>. The first function provides a quantification of counts of sgRNAs from the NGS samples. It requires a library file (`.fasta` or `.fa`) and a list of samples (`.fastq`). The library file must contain an annotation of sgRNAs in the library used in the screen. A sgRNA annotation consists of a barcode sequence (20nt sequence where sgRNA would target) and a name of a gene which the sgRNA suppose to target. 
+
+Here is an example of the loading data for the screen analysis. Files in the example are contained in the `CB2` package. 
 
 ```{r}
 # load the file path of the annotation file.
@@ -39,9 +41,9 @@ system("tail -6 {FASTA}" %>% glue)
 
 The first two lines of the annotation file indicate the annotation of the first sgRNA, and the next two lines are the annotation of the second sgRNA, and so on. The first line of an annotation is formatted as `><genename>_<id>`, where `<genename>` is an id of a symbol of the target gene for the sgRNA and `<id>` is the unique identifier for the sgRNA. `><genename>_<id>` is the completed identifier of the sgRNA and a completed identifier should not appear more than once. The second line of an annotation is the 20nt sequence, and it indicates which part of the target gene will be targeted by the sgRNA. 
 
-The first annotation reveals the library contains a sgRNA and `RAB_3` is the identifier of the sgRNA. This sgRNA is supposed to target `RAB` gene and the intended target locus is `CTGTAGAAGCTACATCGGCT`
+The first annotation indicates the library contains a sgRNA and `RAB_3` is the identifier of the sgRNA. This sgRNA is supposed to target `RAB` gene and the intended target locus is `CTGTAGAAGCTACATCGGCT`
 
-We also have an example of the NGS sample file. Below chunk will show the contents of a NGS sample file.
+We also have an example of the NGS sample file. The following snippet will display the contents of an NGS sample file.
 
 ```{r}
 FASTQ <- system.file("extdata", "toydata",
@@ -50,17 +52,17 @@ FASTQ <- system.file("extdata", "toydata",
 system("head -8 {FASTQ}" %>% glue)
 ```
 
-The NGS sample file contains multiple reads, and each read consists of four sequential lines. The first line is the id of the reads, and the second line contains a sequence of the read, and we assume that a read contains a sequence of the sgRNA as a substring of the read. the third line only contains '+' and the last line contains the quality of each nucleotide of the read ([Phread quality score](https://en.wikipedia.org/wiki/FASTQ_format)).
+The NGS sample file contains multiple reads, and each read consists of four sequential lines. The first line is the id of the reads, and the second line includes a sequence of the read, and we assume that a read contains a nucleotide sequence of the sgRNA as a substring of the read. The third line only includes '+' and the last line includes the quality of each nucleotide of the read ([Phread quality score](https://en.wikipedia.org/wiki/FASTQ_format)).
 
 
-Let's get start the analysis. Before run the analysis we will see the list of `FASTQ` files we can use from the `toydata` example.
+Let's get start the analysis. Before running the analysis we will see the list of `FASTQ` files we can use from the `toydata` example.
 
 ```{r}
 ex_path <- system.file("extdata", "toydata", package = "CB2")
-Sys.glob("{ex_path}/*.fastq" %>% glue)
+Sys.glob("{ex_path}/*.fastq" %>% glue) %>% basename()
 ```
 
-From the above example, we can see there are three groups in the example (Base, High, and Low), and each of them has two replicates. We will perform an analysis between `Base` and `High`. The first thing we need to do is creating a design matrix. The below code shows how to create it.
+From the example directly above, we can recognize there are three groups  (Base, High, and Low) in the example data, and each of them has two replicates. We will perform an analysis between `Base` and `High.` The first thing we need to do is creating a design matrix. The below code shows how to build it.
 
 ```{r}
 df_design <- tribble(
@@ -78,7 +80,7 @@ df_design
 
 `df_design` contains three columns and each row contains information of a sample. The first column is `group` where the sample belongs to, and the `sample_name` is the name of the sample for a convenience. `fastq_path` is the place where you will have the NGS sample file.
 
-After create the `df_design`, and we can run a sgRNA quantification like below:
+After creating the `df_design,` and we can run a sgRNA quantification by calling `run_sgrna_quant.`
 
 ```{r}
 cb2_count <- run_sgrna_quant(FASTA, df_design)
@@ -88,42 +90,52 @@ cb2_count <- run_sgrna_quant(FASTA, df_design)
 head(cb2_count$count)
 ```
 
-After running `run_sgrna_quant`, we will have a `data.frame` (`cb2_count$count`) contains sgRNA counts for each sample and a vector contains the number of reads for each sample (`cb2_count$total`). Each value will indicate how many sgRNA were counted from the function, and we can assume a number of will be used to approximate the number of the cells which a gene within the cell is knocked out by the sgRNA in the pool of the sample.
+After running `run_sgrna_quant,` we will have a data frame (`cb2_count$count`) and a numeric vector (`cb2_count$total`). The data frame contains sgRNA counts for each sample, and the numeric vector contains the number of reads for each sample. 
+In the data frame, each row corresponds to a sgRNA and each column belongs to a sample. Each value in the data frame indicates read counts of the corresponded sgRNA and sample, and it implies how many reads have been aligned to the sgRNA from the sample file. We assume the number will be used to approximate the number of knock-out cells of the target gene of the sgRNA.
 
 ```{r}
 head(cb2_count$total)
 ```
 
-We are also able to lookup CPM using `get_CPM`.
+We are also able to lookup CPM (Count Per Million mapped read counts) using `get_CPM.`
+
 ```{r}
 get_CPM(cb2_count$count)
 ```
 
-There is two functions we can use for quality check. The first function (`plot_count_distribution`) shows the mappability (the success rate of sgRNA identification from reads) for each sample.
+There are four functions we can use to check the quality of the input data.  The first function (`plot_count_distribution`) will give the mappability (the success rate of sgRNA identification from reads) for each sample.
+
 ```{r}
 plot_count_distribution(cb2_count$count %>% get_CPM, df_design)
 ```
 
-You can also check the mappability (The proportion of the number read contains a valid sgRNA sequence among entire reads) using `calc_mappability` function.
+We can also check the mappability (The proportion of the number of reads successfully aligned to a sgRNA in the library among the entire reads) using `calc_mappability` function.
 
 ```{r}
 calc_mappability(cb2_count, df_design)
 ```
 
-`plot_PCA` is can be a way of checking data quality.
+`plot_PCA` can be a way of checking data quality.
 
 ```{r}
 plot_PCA(cb2_count$count %>% get_CPM, df_design)
 ```
 
-After we realize the data quality is okay to move to the next step, then we can perform an analysis for a sgRNA-level using `
+The last function (`plot_corr_heatmap`) display a sgRNA-level correlation heatmap of NGS samples. We assume that samples in the same group clustered together if the data quality is good.
+
+```{r}
+plot_corr_heatmap(cb2_count$count %>% get_CPM, df_design)
+```
+
+
+After we find the data quality is good to move to the next step, then we can perform an analysis for a sgRNA-level using `run_estimation.`
 
 ```{r}
 sgrna_stat <- run_estimation(cb2_count$count, df_design, "High", "Base")
 sgrna_stat
 ```
 
-As you can see above, we need four different parameters for the function. The first is a matrix of the read count, and the second parameter is the design data frame. The last two are the groups we are interested to perform differential abundance test for each sgRNA.
+As you can see above, we need four different parameters for the function. The first is a matrix of the read count, and the second parameter is the design data frame. The last two are the groups we are interested in performing differential abundance test for each sgRNA.
 
 Here is the information of each column in the data.frame of the sgRNA-level statistics:
 
@@ -147,7 +159,7 @@ Here is the information of each column in the data.frame of the sgRNA-level stat
 * `fdr_pa`: The adjusted P-value of `p_pa`.
 * `fdr_pb`: The adjusted P-value of `p_pb`.
 
-Once we are done with the sgRNA-level statistics, we can perform a gene-level test using `measure_gene_stats`.
+Once we finish the sgRNA-level test, we can perform a gene-level test using `measure_gene_stats.`
 
 ```{r}
 gene_stats <- measure_gene_stats(sgrna_stat)
@@ -156,7 +168,7 @@ gene_stats
 
 Here is the information of each column in the data.frame of the gene-level statistics:
 
-* `gene`: Theg gene name to be tested.
+* `gene`: The gene name to be tested.
 * `n_sgrna`: The number of sgRNA targets the gene in the library.
 * `cpm_a`: The mean of CPM of sgRNAs within the first group.
 * `cpm_b`: The mean of CPM of sgRNAs within the second group.
@@ -168,14 +180,14 @@ Here is the information of each column in the data.frame of the gene-level stati
 * `fdr_pa`: The adjusted P-value of `p_pa`.
 * `fdr_pb`: The adjusted P-value of `p_pb`.
 
-After we have a result of the gene-level test, we can filter out a list of genes using different measures. For example, if you are considering to find genes has a differential abundance between two groups, you can use the value `fdr_ts` for the hit selection. If you want to see some genes has enrichment of abundance in the first group (i.e. depiction in the opposite group), you lookup `fdr_pa` value, and `fdr_pb` can be used to see an enrichment of abundance in the second group. Here, we use `fdr_ts` to identify the hit genes.
+After we have a result of the gene-level test, we can filter out a list of genes using different measures. For example, if you are considering to find genes has a differential abundance between two groups, you can use the value `fdr_ts` for the hit selection. If you want to see some genes has enrichment of abundance in the first group (i.e., depiction in the opposite group), you lookup `fdr_pa` value, and `fdr_pb` can be used to see an enrichment of abundance in the second group. Here, we use `fdr_ts` to identify the hit genes.
 
 ```{r}
 gene_stats %>% 
   filter(fdr_ts < 0.1)
 ```
 
-CB<sup>2</sup> also supports a useful dotplot function to lookup the read counts for a gene, and this function can be used to clarify an iteresting hit is valid.
+CB<sup>2</sup> also supports a useful dot plot function to lookup the read counts for a gene, and this function can be used to clarify an interesting hit is valid.
 
 ```{r}
 plot_dotplot(cb2_count$count, df_design, "PARK2")

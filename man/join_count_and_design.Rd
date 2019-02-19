@@ -12,7 +12,7 @@ join_count_and_design(sgcount, df_design)
 \item{df_design}{The table contains a study design.}
 }
 \value{
-A tidy and joined table will be returned.
+A tall-thin and combined table of the sgRNA read counts and study design will be returned.
 }
 \description{
 A function to join a count table and a design table.

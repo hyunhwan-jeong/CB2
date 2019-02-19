@@ -7,7 +7,7 @@
 get_CPM(sgcount)
 }
 \arguments{
-\item{sgcount}{The input table contains read countss of sgRNAs for each sample
+\item{sgcount}{The input table contains read counts of sgRNAs for each sample
 
 A function to calculate the CPM (Counts Per Million) (required)}
 }

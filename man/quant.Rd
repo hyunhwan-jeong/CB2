@@ -2,15 +2,15 @@
 % Please edit documentation in R/RcppExports.R
 \name{quant}
 \alias{quant}
-\title{A C++ function to quantify sgRNA abudnacen from NGS samples}
+\title{A C++ function to quantify sgRNA abundance from NGS samples.}
 \usage{
 quant(ref_path, fastq_path)
 }
 \arguments{
-\item{ref_path}{the path of the annotation file, and it has to be a FASTA formmated file.}
+\item{ref_path}{the path of the annotation file and it has to be a FASTA formatted file.}
 
-\item{fastq_path}{a list of paths of the FASTQ files.}
+\item{fastq_path}{a list of the FASTQ files.}
 }
 \description{
-A C++ function to quantify sgRNA abudnacen from NGS samples
+A C++ function to quantify sgRNA abundance from NGS samples.
 }

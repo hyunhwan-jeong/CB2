@@ -3,8 +3,10 @@
 \name{fit_ab}
 \alias{fit_ab}
 \title{A C++ function to perform a parameter estimation for the sgRNA-level test. 
-It will estimate two different parameters `phat` and `vhat`,
-and we believe input count data follows the beta-binomial distribution.}
+It will estimate two different parameters `phat` and `vhat,`
+and we assume input count data follows the beta-binomial distribution.
+Dr. Keith Baggerly initially implemented this code in Matlab,
+and it has been rewritten it in C++ for the speed-up.}
 \usage{
 fit_ab(xvec, nvec)
 }
@@ -15,6 +17,8 @@ fit_ab(xvec, nvec)
 }
 \description{
 A C++ function to perform a parameter estimation for the sgRNA-level test. 
-It will estimate two different parameters `phat` and `vhat`,
-and we believe input count data follows the beta-binomial distribution.
+It will estimate two different parameters `phat` and `vhat,`
+and we assume input count data follows the beta-binomial distribution.
+Dr. Keith Baggerly initially implemented this code in Matlab,
+and it has been rewritten it in C++ for the speed-up.
 }

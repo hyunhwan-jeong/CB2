@@ -7,16 +7,16 @@
 run_estimation(sgcount, design, group_a, group_b)
 }
 \arguments{
-\item{sgcount}{A table contains}
+\item{sgcount}{This data frame contains read counts of sgRNAs for the samples.}
 
-\item{design}{A table contains study design. It has to contain `group`}
+\item{design}{This table contains study design. It has to contain `group.`}
 
-\item{group_a}{The first group to be in the test.}
+\item{group_a}{The first group to be tested.}
 
-\item{group_b}{The second group to be in the test.}
+\item{group_b}{The second group to be tested.}
 }
 \value{
-a table contains the sgRNA-level test result, and the table contains these columns: 
+A table contains the sgRNA-level test result, and the table contains these columns: 
 \itemize{
  \item `sgRNA`: The sgRNA identifier.
  \item `gene`: The gene is the target of the sgRNA 

@@ -12,7 +12,7 @@ plot_count_distribution(sgcount, df_design)
 \item{df_design}{The table contains a study design.}
 }
 \value{
-A ggplot object contains a read count distribution plot for `sgcount`.
+A ggplot2 object contains a read count distribution plot for `sgcount`.
 }
 \description{
 A function to plot read count distribution.

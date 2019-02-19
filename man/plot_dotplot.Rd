@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{plot_dotplot}
 \alias{plot_dotplot}
-\title{A function to visualze dotplots for a gene.}
+\title{A function to visualize dot plots for a gene.}
 \usage{
 plot_dotplot(sgcount, df_design, gene)
 }
@@ -11,13 +11,13 @@ plot_dotplot(sgcount, df_design, gene)
 
 \item{df_design}{The table contains a study design.}
 
-\item{gene}{The gene to be visualzed.}
+\item{gene}{The gene to be shown.}
 }
 \value{
-A ggplot object contains dotplots of sgRNA read counts for a gene.
+A ggplot2 object contains dot plots of sgRNA read counts for a gene.
 }
 \description{
-A function to visualze dotplots for a gene.
+A function to visualize dot plots for a gene.
 }
 \examples{
 library(CB2)

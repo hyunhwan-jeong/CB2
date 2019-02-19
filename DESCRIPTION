@@ -1,12 +1,12 @@
 Package: CB2
 Type: Package
 Title: CRISPR Pooled Screen Analysis using Beta-Binomial Test
-Version: 1.0
-Date: 2019-01-30
+Version: 1.0.1
+Date: 2019-02-18
 Authors@R: 
   c(person(given = "Hyun-Hwan", family = "Jeong", role = c("aut", "cre"), email = "hyun-hwan.jeong@bcm.edu"))
-Description: CRISPRBetaBinomial (CB2) is a package for designing a statistical hypothesis test for robust target identification, developing an accurate mapping algorithm to quantify sgRNA (single-guided RNA) abundances, 
-  and minimizing the parameters necessary for CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) pooled screen data analysis. Details about this algorithm are in Jeong et al. (2018) <doi:10.1101/309302>.
+Description: Provides functions for hit gene identification and  quantification of sgRNA (single-guided RNA) abundances for CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) pooled screen data analysis. 
+  Details are in Jeong et al. (2018) <doi:10.1101/309302> and Baggerly et al. (2003) <doi:10.1093/bioinformatics/btg173>. 
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Imports:
@@ -18,7 +18,8 @@ Imports:
     stringr,
     ggplot2,
     tidyr,
-    glue
+    glue,
+    pheatmap
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: 
     testthat,

@@ -188,13 +188,13 @@ measure_gene_stats <- function(sgrna_stat) {
     }
     sgrna_stat %>% dplyr::group_by_(~gene) %>%
         dplyr::summarise_(
-            n_sgrna = ~ n(),
+            n_sgrna = ~ dplyr::n(),
             cpm_a = ~ mean(cpm_a),
             cpm_b = ~ mean(cpm_b),
             logFC = ~ mean(logFC),
-            p_ts = ~ ifelse(n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
-            p_pa = ~ ifelse(n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
-            p_pb = ~ ifelse(n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
+            p_ts = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
+            p_pa = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
+            p_pb = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
         ) %>%
         dplyr::ungroup() %>% dplyr::mutate_(
             fdr_ts = ~ p.adjust(p_ts, method = "fdr"),

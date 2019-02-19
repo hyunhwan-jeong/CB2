@@ -1,18 +1,24 @@
 ## What is CB<sup>2</sup>
 
-CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for deconvoluting CRISPR data based on beta-binomial distribution. 
-We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are implemented in [CRISPRCloud](http://crispr.nrihub.org/).
+CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 
+We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are also implemented in [CRISPRCloud](http://crispr.nrihub.org/).
 
 ## How to install
 
-Currently CB<sup>2</sup> is not on `CRAN`, but we plan to submit the package to `CRAN` soon. Installation of CB<sup>2</sup> can be done using below two lines of code in your R terminal.
+Currently CB<sup>2</sup> is now on `CRAN`, and you can install it using `install.package` function.
+
+```r
+instll.package("CB2")
+```
+
+Installation Github version of CB<sup>2</sup> can be done using the following lines of code in your R terminal.
 
 ```r
 install.packages("devtools")
 devtools::install_github("hyunhwaj/CB2")
 ```
 
-Or, here is a one-liner command line for the installation
+Alternatively, here is a one-liner command line for the installation.
 
 ```
 Rscript -e "install.packages('devtools'); devtools::install_github('LiuzLab/CB2')"

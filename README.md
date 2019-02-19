@@ -51,3 +51,5 @@ sgrna_stat <- run_estimation(sgrna_count$count, df_design, "Base", "Low")
 gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```
+
+More detailed tutorial is available [here](http://htmlpreview.github.io/?https://github.com/cran/CB2/blob/master/inst/doc/cb2-tutorial.html)!

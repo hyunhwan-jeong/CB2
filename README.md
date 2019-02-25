@@ -1,4 +1,6 @@
 [![](https://cranlogs.r-pkg.org/badges/CB2)](https://cran.r-project.org/package=CB2)
+[![](https://img.shields.io/cran/l/CB2.svg)](https://cran.r-project.org/web/packages/CB2/LICENSE)
+
 
 ## What is CB<sup>2</sup>
 

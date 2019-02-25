@@ -25,7 +25,7 @@ rep.row <- function(x,n) matrix(rep(x,each=n),nrow=n)
 
 
 test_that("A very simple sanity check", {
-  expect_length((cb2_count <- run_sgrna_quant(FASTA, df_design)), 2)
+  expect_length((cb2_count <- run_sgrna_quant(FASTA, df_design)), 3)
   expect_error(run_sgrna_quant(FASTA, df_design[,c("group", "sample_name")]))
   expect_length((sgstat <- run_estimation(cb2_count$count, df_design, "Base", "Low")), 19)
   expect_error(run_estimation(cb2_count$count, df_design, "Base", "Lows"),  "group_b must be one of the groups in the design data frame.")
@@ -34,3 +34,25 @@ test_that("A very simple sanity check", {
   expect_length(measure_gene_stats(sgstat), 11)
   expect_error(measure_gene_stats(cb2_count$count), "It looks like `sgrna_stat` does not contain any result of a statistical test.")
 })
+
+
+test_that("Testing whether subsamplings with the same seed are identical.", {
+  set.seed(123)
+  cb2_count <- run_sgrna_quant(FASTA, df_design, sampling_ratio = 0.5)
+  
+  set.seed(123)
+  cb2_count2 <- run_sgrna_quant(FASTA, df_design, sampling_ratio = 0.5)
+  
+  expect_identical(cb2_count, cb2_count2)
+})
+
+test_that("Testing whether the subsampling code works as intended.", {
+  cb2_count_nosubs <- run_sgrna_quant(FASTA, df_design)
+
+  for( i in seq(0.1, 0.9, 0.1)) {
+    set.seed(123)
+    cb2_count <- run_sgrna_quant(FASTA, df_design, sampling_ratio = i)
+    expect_equal(sum(dplyr::between(cb2_count$total / cb2_count_nosubs$total, i-0.1, i+0.1)), length(cb2_count$total))
+  }
+})
+

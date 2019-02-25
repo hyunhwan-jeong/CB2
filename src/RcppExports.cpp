@@ -7,14 +7,15 @@
 using namespace Rcpp;
 
 // quant
-Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path);
-RcppExport SEXP _CB2_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP) {
+Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path, Rcpp::Nullable<double> sample_ratio);
+RcppExport SEXP _CB2_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP, SEXP sample_ratioSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type ref_path(ref_pathSEXP);
     Rcpp::traits::input_parameter< std::vector<std::string> >::type fastq_path(fastq_pathSEXP);
-    rcpp_result_gen = Rcpp::wrap(quant(ref_path, fastq_path));
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type sample_ratio(sample_ratioSEXP);
+    rcpp_result_gen = Rcpp::wrap(quant(ref_path, fastq_path, sample_ratio));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -32,7 +33,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CB2_quant", (DL_FUNC) &_CB2_quant, 2},
+    {"_CB2_quant", (DL_FUNC) &_CB2_quant, 3},
     {"_CB2_fit_ab", (DL_FUNC) &_CB2_fit_ab, 2},
     {NULL, NULL, 0}
 };

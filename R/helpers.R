@@ -4,9 +4,11 @@
 #'
 #' @param design A table contains the study design. It must contain `fastq_path` and `sample_name.`
 #'
-#' @return It will return a list, and the list contains two elements. 
-#'   The first element (`count`) is a data frame contains the result of the quantification for each sample. 
-#'   The second element (`total`) is a numeric vector contains the total number of reads of each sample.
+#' @param sampling_ratio NULL as a default, and will be treated as a percentage of the subsamping for each NGS file if a numeric value belongs to the parameter.
+#' @return It will return a list, and the list contains three elements. 
+#'   The first element (`count') is a data frame contains the result of the quantification for each sample. 
+#'   The second element (`total') is a numeric vector contains the total number of reads of each sample.
+#'   The last element (`sequence') a data frame contains the sequence of each sgRNA in the library.
 #'   
 #' @examples
 #' library(CB2)
@@ -28,7 +30,7 @@
 #' cb2_count <- run_sgrna_quant(FASTA, df_design)
 #'
 #' @export
-run_sgrna_quant <- function(lib_path, design) {
+run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
     # `design` has to be table `design` has to have four columns: sample_name, group, fastq_path
     if(!all(c("sample_name", "fastq_path") %in% colnames(design))) {
         stop("The design data frame should have both `sample_name` and `fastq_path` columns.")    
@@ -42,13 +44,15 @@ run_sgrna_quant <- function(lib_path, design) {
     }
     lib_path <- normalizePath(lib_path)
     design$fastq_path <- normalizePath(design$fastq_path)
-    quant_ret <- quant(lib_path, design$fastq_path)
+    quant_ret <- quant(lib_path, design$fastq_path, sampling_ratio)
     df_count <- as.data.frame(quant_ret$count)
     rownames(df_count) <- quant_ret$sgRNA
     colnames(df_count) <- design$sample_name
+
     total <- quant_ret$total
     names(total) <- design$sample_name
-    list(count = df_count, total = total)
+    sequence <- data.frame(sgRNA = quant_ret$sgRNA, sequence=quant_ret$sequence)
+    list(count = df_count, total = total, sequence = sequence)
 }
 
 #' A function to perform a statistical test at a sgRNA-level
@@ -64,25 +68,25 @@ run_sgrna_quant <- function(lib_path, design) {
 #' @importFrom stats p.adjust pt
 #' @return A table contains the sgRNA-level test result, and the table contains these columns: 
 #' \itemize{
-#'  \item `sgRNA`: The sgRNA identifier.
-#'  \item `gene`: The gene is the target of the sgRNA 
-#'  \item `n_a`: The number of replicates of the first group.
-#'  \item `n_b`: The number of replicates of the second group.
-#'  \item `phat_a`: The proportion value of the sgRNA for the first group.
-#'  \item `phat_b`: The proportion value of the sgRNA for the second group.
-#'  \item `vhat_a`: The variance of the sgRNA for the first group.
-#'  \item `vhat_b`: The variance of the sgRNA for the second group.
-#'  \item `cpm_a`: The mean CPM of the sgRNA within the first group.
-#'  \item `cpm_b`: The mean CPM of the sgRNA within the second group.
-#'  \item `logFC`: The log fold change of sgRNA between two groups.
-#'  \item `t_value`: The value for the t-statistics.
-#'  \item `df`: The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
-#'  \item `p_ts`: The p-value indicates a difference between the two groups.
-#'  \item `p_pa`: The p-value indicates enrichment of the first group.
-#'  \item `p_pb`: The p-value indicates enrichment of the second group.
-#'  \item `fdr_ts`: The adjusted P-value of `p_ts`.
-#'  \item `fdr_pa`: The adjusted P-value of `p_pa`.
-#'  \item `fdr_pb`: The adjusted P-value of `p_pb`.
+#'  \item `sgRNA': The sgRNA identifier.
+#'  \item `gene': The gene is the target of the sgRNA 
+#'  \item `n_a': The number of replicates of the first group.
+#'  \item `n_b': The number of replicates of the second group.
+#'  \item `phat_a': The proportion value of the sgRNA for the first group.
+#'  \item `phat_b': The proportion value of the sgRNA for the second group.
+#'  \item `vhat_a': The variance of the sgRNA for the first group.
+#'  \item `vhat_b': The variance of the sgRNA for the second group.
+#'  \item `cpm_a': The mean CPM of the sgRNA within the first group.
+#'  \item `cpm_b': The mean CPM of the sgRNA within the second group.
+#'  \item `logFC': The log fold change of sgRNA between two groups.
+#'  \item `t_value': The value for the t-statistics.
+#'  \item `df': The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
+#'  \item `p_ts': The p-value indicates a difference between the two groups.
+#'  \item `p_pa': The p-value indicates enrichment of the first group.
+#'  \item `p_pb': The p-value indicates enrichment of the second group.
+#'  \item `fdr_ts': The adjusted P-value of `p_ts'.
+#'  \item `fdr_pa': The adjusted P-value of `p_pa'.
+#'  \item `fdr_pb': The adjusted P-value of `p_pb'.
 #' }
 #' @examples 
 #' library(CB2)
@@ -128,8 +132,8 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
     est$cpm_a <- rowMeans(sgcount_a/nmat_a * 10^6)
     est$cpm_b <- rowMeans(sgcount_b/nmat_b * 10^6)
     
-    # if `ncol(sgcount_a)`` or `nocl(sgcount_b)` are 1, `vhat_a`` or `vhat_b`` will only contain `na`. 
-    # In this case we need to treat all the `na` values as 0
+    # if `ncol(sgcount_a)' or `nocl(sgcount_b)' are 1, `vhat_a' or `vhat_b' will only contain `na'. 
+    # In this case we need to treat all the `na' values as 0
     # for further procedure.
     est$vhat_a[is.na(est$vhat_a)] <- 0
     est$vhat_b[is.na(est$vhat_b)] <- 0
@@ -155,7 +159,7 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
 
 #' A function to perform gene-level test using a sgRNA-level statistics.
 #' 
-#' @param sgrna_stat A data frame created by `run_estimation`
+#' @param sgrna_stat A data frame created by `run_estimation'
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble
@@ -164,17 +168,17 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
 #'
 #' @return A table contains the gene-level test result, and the table contains these columns: 
 #' \itemize{
-#'   \item `gene`: Theg gene name to be tested.
-#'   \item `n_sgrna`: The number of sgRNA targets the gene in the library.
-#'   \item `cpm_a`: The mean of CPM of sgRNAs within the first group.
-#'   \item `cpm_b`: The mean of CPM of sgRNAs within the second group.
-#'   \item `logFC`: The log fold change of the gene between two groups.
-#'   \item `p_ts`: The p-value indicates a difference between the two groups at the gene-level.
-#'   \item `p_pa`: The p-value indicates enrichment of the first group at the gene-level.
-#'   \item `p_pb`: The p-value indicates enrichment of the second group at the gene-level.
-#'   \item `fdr_ts`: The adjusted P-value of `p_ts`.
-#'   \item `fdr_pa`: The adjusted P-value of `p_pa`.
-#'   \item `fdr_pb`: The adjusted P-value of `p_pb`.
+#'   \item `gene': Theg gene name to be tested.
+#'   \item `n_sgrna': The number of sgRNA targets the gene in the library.
+#'   \item `cpm_a': The mean of CPM of sgRNAs within the first group.
+#'   \item `cpm_b': The mean of CPM of sgRNAs within the second group.
+#'   \item `logFC': The log fold change of the gene between two groups.
+#'   \item `p_ts': The p-value indicates a difference between the two groups at the gene-level.
+#'   \item `p_pa': The p-value indicates enrichment of the first group at the gene-level.
+#'   \item `p_pb': The p-value indicates enrichment of the second group at the gene-level.
+#'   \item `fdr_ts': The adjusted P-value of `p_ts'.
+#'   \item `fdr_pa': The adjusted P-value of `p_pa'.
+#'   \item `fdr_pb': The adjusted P-value of `p_pb'.
 #' }
 #' 
 #' @examples
@@ -188,13 +192,13 @@ measure_gene_stats <- function(sgrna_stat) {
     }
     sgrna_stat %>% dplyr::group_by_(~gene) %>%
         dplyr::summarise_(
-            n_sgrna = ~ n(),
+            n_sgrna = ~ dplyr::n(),
             cpm_a = ~ mean(cpm_a),
             cpm_b = ~ mean(cpm_b),
             logFC = ~ mean(logFC),
-            p_ts = ~ ifelse(n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
-            p_pa = ~ ifelse(n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
-            p_pb = ~ ifelse(n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
+            p_ts = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
+            p_pa = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
+            p_pb = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
         ) %>%
         dplyr::ungroup() %>% dplyr::mutate_(
             fdr_ts = ~ p.adjust(p_ts, method = "fdr"),

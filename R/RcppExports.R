@@ -9,8 +9,8 @@
 #' @importFrom Rcpp evalCpp
 #' @useDynLib CB2
 #' @export
-quant <- function(ref_path, fastq_path) {
-    .Call('_CB2_quant', PACKAGE = 'CB2', ref_path, fastq_path)
+quant <- function(ref_path, fastq_path, sample_ratio) {
+    .Call('_CB2_quant', PACKAGE = 'CB2', ref_path, fastq_path, sample_ratio)
 }
 
 #' A C++ function to perform a parameter estimation for the sgRNA-level test. 

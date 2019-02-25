@@ -12,7 +12,7 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 Currently CB<sup>2</sup> is now on `CRAN`, and you can install it using `install.package` function.
 
 ```r
-instll.package("CB2")
+install.package("CB2")
 ```
 
 Installation Github version of CB<sup>2</sup> can be done using the following lines of code in your R terminal.

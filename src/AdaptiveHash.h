@@ -79,7 +79,7 @@ struct sgRNA_MAP {
       
       tot_reads_len += line.size();
       if(++num_proc_line%int(1e6)==0) {
-        Rcpp::Rcerr << "Processing " << num_proc_line << "lines..." << endl;
+        Rcpp::Rcerr << "Processing " << num_proc_line << "th line..." << endl;
         Rcpp::Rcerr << "Current Mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
       }
       int cur_len = 0;
@@ -138,7 +138,7 @@ struct sgRNA_MAP {
       reverse(line.begin(), line.end());
     }
     Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
-    Rcpp::Rcerr << "Final Mappability : " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+    Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
     
     inp.close();
     

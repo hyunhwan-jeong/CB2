@@ -17,6 +17,8 @@ using namespace std;
 struct gRNA_Reference {
   int lib_seq_len;
   unordered_map<long long, string> lib;
+  vector<string> seq;
+  
   gRNA_Reference(const char *f_lib) {
     ifstream inp(f_lib);
     string name, se;
@@ -31,9 +33,13 @@ struct gRNA_Reference {
       }
       lib_seq_len = se.size();
       lib[num] = name;
+      seq.push_back(se);
     }
     inp.close();
-  }  
+    Rcpp::Rcerr << "Detects the length of guided RNA is " << lib_seq_len << endl;
+    Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+  } 
+  
 };
 
 struct sgRNA_MAP {
@@ -48,7 +54,8 @@ struct sgRNA_MAP {
   long long tot_reads_len;
   bool is_rc;
   gRNA_Reference &ref;
-  void run_MAP(const char *f_seq) {
+  void run_MAP(const char *f_seq, bool need_subsample, double subsample_ratio) {
+    Rcpp::Rcerr << "Reading " << f_seq << endl;
     string line;
     int num_line = 0;
     is_rc = false;
@@ -59,17 +66,21 @@ struct sgRNA_MAP {
     long long mod = 1LL<<(2*ref.lib_seq_len);
     const int rc[] = {2, 3, 0, 1};
     string msg;	
-    Rcpp::Rcerr << "Detects the length of guided RNA is " << ref.lib_seq_len << endl;
-    Rcpp::Rcerr << ref.lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
 
     ifstream inp(f_seq);
     
+    if(need_subsample) {
+      REprintf("Sub-samping has been enabled. Only %.2f%% of the read will be counted.\n", subsample_ratio * 100.0);
+    }
     while(getline(inp, line)) {
       if(num_line++%4!=1) continue;
+      
+      if(need_subsample && R::runif(0, 1) > subsample_ratio) continue;
+      
       tot_reads_len += line.size();
       if(++num_proc_line%int(1e6)==0) {
         Rcpp::Rcerr << "Processing " << num_proc_line << "lines..." << endl;
-        Rcpp::Rcerr << "Current mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
+        Rcpp::Rcerr << "Current Mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
       }
       int cur_len = 0;
       long long num = 0;
@@ -126,7 +137,9 @@ struct sgRNA_MAP {
       }
       reverse(line.begin(), line.end());
     }
-    Rcpp::Rcerr << "All " << num_proc_line << " were proceed!" << endl;
+    Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
+    Rcpp::Rcerr << "Final Mappability : " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+    
     inp.close();
     
     if(num_hits < num_hits_rc) {

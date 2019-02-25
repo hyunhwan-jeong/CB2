@@ -4,7 +4,7 @@
 \alias{quant}
 \title{A C++ function to quantify sgRNA abundance from NGS samples.}
 \usage{
-quant(ref_path, fastq_path)
+quant(ref_path, fastq_path, sample_ratio)
 }
 \arguments{
 \item{ref_path}{the path of the annotation file and it has to be a FASTA formatted file.}

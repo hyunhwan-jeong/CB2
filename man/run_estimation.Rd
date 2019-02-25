@@ -18,25 +18,25 @@ run_estimation(sgcount, design, group_a, group_b)
 \value{
 A table contains the sgRNA-level test result, and the table contains these columns: 
 \itemize{
- \item `sgRNA`: The sgRNA identifier.
- \item `gene`: The gene is the target of the sgRNA 
- \item `n_a`: The number of replicates of the first group.
- \item `n_b`: The number of replicates of the second group.
- \item `phat_a`: The proportion value of the sgRNA for the first group.
- \item `phat_b`: The proportion value of the sgRNA for the second group.
- \item `vhat_a`: The variance of the sgRNA for the first group.
- \item `vhat_b`: The variance of the sgRNA for the second group.
- \item `cpm_a`: The mean CPM of the sgRNA within the first group.
- \item `cpm_b`: The mean CPM of the sgRNA within the second group.
- \item `logFC`: The log fold change of sgRNA between two groups.
- \item `t_value`: The value for the t-statistics.
- \item `df`: The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
- \item `p_ts`: The p-value indicates a difference between the two groups.
- \item `p_pa`: The p-value indicates enrichment of the first group.
- \item `p_pb`: The p-value indicates enrichment of the second group.
- \item `fdr_ts`: The adjusted P-value of `p_ts`.
- \item `fdr_pa`: The adjusted P-value of `p_pa`.
- \item `fdr_pb`: The adjusted P-value of `p_pb`.
+ \item `sgRNA': The sgRNA identifier.
+ \item `gene': The gene is the target of the sgRNA 
+ \item `n_a': The number of replicates of the first group.
+ \item `n_b': The number of replicates of the second group.
+ \item `phat_a': The proportion value of the sgRNA for the first group.
+ \item `phat_b': The proportion value of the sgRNA for the second group.
+ \item `vhat_a': The variance of the sgRNA for the first group.
+ \item `vhat_b': The variance of the sgRNA for the second group.
+ \item `cpm_a': The mean CPM of the sgRNA within the first group.
+ \item `cpm_b': The mean CPM of the sgRNA within the second group.
+ \item `logFC': The log fold change of sgRNA between two groups.
+ \item `t_value': The value for the t-statistics.
+ \item `df': The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
+ \item `p_ts': The p-value indicates a difference between the two groups.
+ \item `p_pa': The p-value indicates enrichment of the first group.
+ \item `p_pb': The p-value indicates enrichment of the second group.
+ \item `fdr_ts': The adjusted P-value of `p_ts'.
+ \item `fdr_pa': The adjusted P-value of `p_pa'.
+ \item `fdr_pb': The adjusted P-value of `p_pb'.
 }
 }
 \description{

@@ -7,22 +7,22 @@
 measure_gene_stats(sgrna_stat)
 }
 \arguments{
-\item{sgrna_stat}{A data frame created by `run_estimation`}
+\item{sgrna_stat}{A data frame created by `run_estimation'}
 }
 \value{
 A table contains the gene-level test result, and the table contains these columns: 
 \itemize{
-  \item `gene`: Theg gene name to be tested.
-  \item `n_sgrna`: The number of sgRNA targets the gene in the library.
-  \item `cpm_a`: The mean of CPM of sgRNAs within the first group.
-  \item `cpm_b`: The mean of CPM of sgRNAs within the second group.
-  \item `logFC`: The log fold change of the gene between two groups.
-  \item `p_ts`: The p-value indicates a difference between the two groups at the gene-level.
-  \item `p_pa`: The p-value indicates enrichment of the first group at the gene-level.
-  \item `p_pb`: The p-value indicates enrichment of the second group at the gene-level.
-  \item `fdr_ts`: The adjusted P-value of `p_ts`.
-  \item `fdr_pa`: The adjusted P-value of `p_pa`.
-  \item `fdr_pb`: The adjusted P-value of `p_pb`.
+  \item `gene': Theg gene name to be tested.
+  \item `n_sgrna': The number of sgRNA targets the gene in the library.
+  \item `cpm_a': The mean of CPM of sgRNAs within the first group.
+  \item `cpm_b': The mean of CPM of sgRNAs within the second group.
+  \item `logFC': The log fold change of the gene between two groups.
+  \item `p_ts': The p-value indicates a difference between the two groups at the gene-level.
+  \item `p_pa': The p-value indicates enrichment of the first group at the gene-level.
+  \item `p_pb': The p-value indicates enrichment of the second group at the gene-level.
+  \item `fdr_ts': The adjusted P-value of `p_ts'.
+  \item `fdr_pa': The adjusted P-value of `p_pa'.
+  \item `fdr_pb': The adjusted P-value of `p_pb'.
 }
 }
 \description{

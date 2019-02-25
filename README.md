@@ -1,3 +1,5 @@
+[![](https://cranlogs.r-pkg.org/badges/CB2)](https://cran.r-project.org/package=CB2)
+
 ## What is CB<sup>2</sup>
 
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 

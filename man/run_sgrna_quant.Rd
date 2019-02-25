@@ -10,6 +10,8 @@ run_sgrna_quant(lib_path, design, sampling_ratio = NULL)
 \item{lib_path}{The path of the annotation file.}
 
 \item{design}{A table contains the study design. It must contain `fastq_path` and `sample_name.`}
+
+\item{sampling_ratio}{NULL as a default, and will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.}
 }
 \value{
 It will return a list, and the list contains three elements. 

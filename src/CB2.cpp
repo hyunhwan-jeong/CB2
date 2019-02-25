@@ -9,6 +9,7 @@ using namespace arma;
 //'
 //' @param ref_path the path of the annotation file and it has to be a FASTA formatted file.
 //' @param fastq_path a list of the FASTQ files.
+//' @param sample_ratio will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.
 //'
 //' @importFrom Rcpp evalCpp
 //' @useDynLib CB2

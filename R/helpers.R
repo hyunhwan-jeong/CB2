@@ -4,7 +4,8 @@
 #'
 #' @param design A table contains the study design. It must contain `fastq_path` and `sample_name.`
 #'
-#' @param sampling_ratio NULL as a default, and will be treated as a percentage of the subsamping for each NGS file if a numeric value belongs to the parameter.
+#' @param sampling_ratio NULL as a default, and will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.
+#' 
 #' @return It will return a list, and the list contains three elements. 
 #'   The first element (`count') is a data frame contains the result of the quantification for each sample. 
 #'   The second element (`total') is a numeric vector contains the total number of reads of each sample.

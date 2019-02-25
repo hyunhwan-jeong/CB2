@@ -1,3 +1,7 @@
+[![](https://cranlogs.r-pkg.org/badges/CB2)](https://cran.r-project.org/package=CB2)
+[![](https://img.shields.io/cran/l/CB2.svg)](https://cran.r-project.org/web/packages/CB2/LICENSE)
+
+
 ## What is CB<sup>2</sup>
 
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 
@@ -51,3 +55,5 @@ sgrna_stat <- run_estimation(sgrna_count$count, df_design, "Base", "Low")
 gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```
+
+More detailed tutorial is available [here](https://cran.r-project.org/web/packages/CB2/vignettes/cb2-tutorial.html)!

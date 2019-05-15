@@ -144,7 +144,8 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
     eps <- .Machine$double.eps
     est$t_value <- (est$phat_b - est$phat_a)/sqrt(est$vhat_a + est$vhat_b + eps * zero_var)
     
-    est$df <- ((est$vhat_a + est$vhat_b)^2 + zero_var)/((est$vhat_a^2)/(est$n_a - 1) + (est$vhat_b^2)/(est$n_b - 1) + zero_var)
+    
+    est$df <- ((est$vhat_a + est$vhat_b)^2 + zero_var)/((est$vhat_a^2)/max(1,est$n_a - 1) + (est$vhat_b^2)/max(1,est$n_b - 1) + zero_var)
     est$df[est$df == 0] <- 1
     est$df[is.nan(est$df)] <- 1
     

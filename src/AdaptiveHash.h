@@ -3,6 +3,7 @@
 #include <Rcpp.h>
 #include <unordered_map>
 #include <map>
+#include <set>
 #include <fstream>
 #include <cstdio>
 #include <iostream>
@@ -21,22 +22,46 @@ struct gRNA_Reference {
   
   gRNA_Reference(const char *f_lib) {
     ifstream inp(f_lib);
+    
     string name, se;
-    lib_seq_len = 20;
+    
+    unordered_map<string, int> sgrna_count;
     while(inp>>name) {
       if(name[0]=='>') name = name.substr(1);
       inp >> se;
+      sgrna_count[se]++;
+    }
+    
+    int tot_dups = 0;
+    for(auto &it: sgrna_count) {
+      if(it.second > 1) {
+        ++tot_dups;
+      }
+    } 
+   
+    Rcpp::Rcerr << tot_dups << " sgRNA sequences were repetitive and will be discarded." << endl; 
+    lib_seq_len = 20;
+    
+    inp.close();
+    inp.clear();
+    inp.open(f_lib);
+    
+    while(inp>>name) {
+      if(name[0]=='>') name = name.substr(1);
+      inp >> se;
+      if(sgrna_count[se]!=1) continue;
       long long num = 0;
       for(auto &x : se) {
         num *= 4;
         num += (toupper(x)>>1)&3;
       }
+      
       lib_seq_len = se.size();
       lib[num] = name;
       seq.push_back(se);
     }
     inp.close();
-    Rcpp::Rcerr << "Detects the length of guided RNA is " << lib_seq_len << endl;
+    Rcpp::Rcerr << "CB2 Detects the length of guided RNA is " << lib_seq_len << endl;
     Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
   } 
   

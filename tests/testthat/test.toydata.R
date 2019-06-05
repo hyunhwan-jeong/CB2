@@ -3,7 +3,7 @@ context("Check whether it works")
 library(CB2)
 library(dplyr)
 FASTA <- system.file("extdata",
-                     "toydata", "small_sample.fasta",
+                     "toydata", "small_sample_dup.fasta",
                      package = "CB2")
 df_design <- data.frame()
 for(g in c("Low", "High", "Base")) {
@@ -61,11 +61,11 @@ test_that("Testing whether the subsampling code works as intended.", {
 #   published <- read.csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/results/Sanson/CRISPRn-A375/FDR/CB2.csv")
 #   sgrna <- run_estimation(Sanson_CRISPRn_A375$count, Sanson_CRISPRn_A375$design, "ctl", "trt")
 #   gene <- measure_gene_stats(sgrna)
-#   
+# 
 #   test <- dplyr::left_join(
 #     published,
 #     gene %>% select(gene, fdr_test = fdr_pa)
 #   )
-#     
+# 
 #   testthat::expect(sum(abs(test$fdr-test$fdr_test)) < 1e-10)
 # })

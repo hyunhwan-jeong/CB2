@@ -1,11 +1,13 @@
 #' A function to run a sgRNA quantification algorithm from NGS sample
 #' 
-#' @param lib_path The path of the annotation file.
-#'
+#' @param lib_path The path of the FASTA file.
 #' @param design A table contains the study design. It must contain `fastq_path` and `sample_name.`
-#'
 #' @param sampling_ratio NULL as a default, and will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.
+#' @param map_path The path of file contains gene-sgRNA mapping.
 #' 
+#' @importFrom tools file_ext
+#' @importFrom readr read_csv read_tsv
+#' @importFrom dplyr left_join
 #' @return It will return a list, and the list contains three elements. 
 #'   The first element (`count') is a data frame contains the result of the quantification for each sample. 
 #'   The second element (`total') is a numeric vector contains the total number of reads of each sample.
@@ -31,7 +33,10 @@
 #' cb2_count <- run_sgrna_quant(FASTA, df_design)
 #'
 #' @export
-run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
+run_sgrna_quant <- function(lib_path, 
+                            design, 
+                            map_path = NULL,
+                            sampling_ratio = NULL) {
     # `design` has to be table `design` has to have four columns: sample_name, group, fastq_path
     if(!all(c("sample_name", "fastq_path") %in% colnames(design))) {
         stop("The design data frame should have both `sample_name` and `fastq_path` columns.")    
@@ -40,21 +45,97 @@ run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
     if(!file.exists(lib_path)) {
         stop("The library annotation file (FASTA) does not exist.")
     }
+    
+    if(!is.null(map_path) && !file.exists(map_path)) {
+        stop("The mapping file does not exist.")
+    }
+    
+    if(!is.null(map_path)&&!tolower(file_ext(map_path)) %in% c("csv", "tsv")) {
+        stop("The mapping file should be either CSV or TSV file.")
+    }
     if(!all(file.exists(design$fastq_path))) {
         stop("Some of sample FASTQ files does not exist.")
     }
+    
     lib_path <- normalizePath(lib_path)
     design$fastq_path <- normalizePath(design$fastq_path)
     quant_ret <- quant(lib_path, design$fastq_path, sampling_ratio)
-    df_count <- as.data.frame(quant_ret$count)
-    rownames(df_count) <- quant_ret$sgRNA
-    colnames(df_count) <- design$sample_name
-
+    
+    if(is.null(map_path)) {
+        df_count <- as.data.frame(quant_ret$count)
+        rownames(df_count) <- quant_ret$sgRNA
+        colnames(df_count) <- design$sample_name
+    } else {
+        df_count <- as.data.frame(quant_ret$count)
+        colnames(df_count) <- design$sample_name
+        df_count <- cbind(
+            data.frame(id = quant_ret$sgRNA),
+            df_count
+            )
+        if(tolower(file_ext(map_path)) == "csv") {
+            df_map <- read_csv(map_path)
+        } else {
+            df_map <- read_tsv(map_path)
+        }
+        df_count <-
+            left_join(df_map,
+                      df_count, by = "id")
+    }
+    
     total <- quant_ret$total
     names(total) <- design$sample_name
     sequence <- data.frame(sgRNA = quant_ret$sgRNA, sequence=quant_ret$sequence)
     list(count = df_count, total = total, sequence = sequence)
 }
+
+#' A function to perform a statistical test at a sgRNA-level, deprecated.
+#' @param sgcount This data frame contains read counts of sgRNAs for the samples.
+#' @param design This table contains study design. It has to contain `group.`
+#' @param group_a The first group to be tested.
+#' @param group_b The second group to be tested.
+#' @param delim The delimiter between a gene name and a sgRNA ID. It will be used if only rownames contains sgRNA ID.
+#' @param ge_id The column name of the gene column.
+#' @param sg_id The column/columns of sgRNA identifiers.
+
+#' @return A table contains the sgRNA-level test result, and the table contains these columns: 
+#' \itemize{
+#'  \item `sgRNA': The sgRNA identifier.
+#'  \item `gene': The gene is the target of the sgRNA 
+#'  \item `n_a': The number of replicates of the first group.
+#'  \item `n_b': The number of replicates of the second group.
+#'  \item `phat_a': The proportion value of the sgRNA for the first group.
+#'  \item `phat_b': The proportion value of the sgRNA for the second group.
+#'  \item `vhat_a': The variance of the sgRNA for the first group.
+#'  \item `vhat_b': The variance of the sgRNA for the second group.
+#'  \item `cpm_a': The mean CPM of the sgRNA within the first group.
+#'  \item `cpm_b': The mean CPM of the sgRNA within the second group.
+#'  \item `logFC': The log fold change of sgRNA between two groups.
+#'  \item `t_value': The value for the t-statistics.
+#'  \item `df': The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
+#'  \item `p_ts': The p-value indicates a difference between the two groups.
+#'  \item `p_pa': The p-value indicates enrichment of the first group.
+#'  \item `p_pb': The p-value indicates enrichment of the second group.
+#'  \item `fdr_ts': The adjusted P-value of `p_ts'.
+#'  \item `fdr_pa': The adjusted P-value of `p_pa'.
+#'  \item `fdr_pb': The adjusted P-value of `p_pb'.
+#' }
+#' 
+#' @export
+run_estimation <- function( sgcount, design, 
+                            group_a, group_b, 
+                            delim = "_",
+                            ge_id = NULL,
+                            sg_id = NULL) {
+    .Deprecated('measure_sgrna_stats')
+    measure_sgrna_stats(
+        sgcount, design, 
+        group_a, group_b, 
+        delim,
+        ge_id,
+        sg_id
+    )
+}
+
 
 #' A function to perform a statistical test at a sgRNA-level
 #' @param sgcount This data frame contains read counts of sgRNAs for the samples.
@@ -62,7 +143,9 @@ run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
 #' @param design This table contains study design. It has to contain `group.`
 #' @param group_a The first group to be tested.
 #' @param group_b The second group to be tested.
-#' @param id The column/columns of sgRNA identifiers.
+#' @param delim The delimiter between a gene name and a sgRNA ID. It will be used if only rownames contains sgRNA ID.
+#' @param ge_id The column name of the gene column.
+#' @param sg_id The column/columns of sgRNA identifiers.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble as_tibble
@@ -96,7 +179,11 @@ run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
 #' measure_sgrna_stats(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
 #' 
 #' @export
-measure_sgrna_stats <- function(sgcount, design, group_a, group_b, id = NULL) {
+measure_sgrna_stats <- function(sgcount, design, 
+                                group_a, group_b, 
+                                delim = "_",
+                                ge_id = NULL,
+                                sg_id = NULL) {
 
     if(!is.data.frame(sgcount) && !is.matrix(sgcount)) {
         stop("sgcount has to be either a data.frame or a matrix.")    
@@ -116,21 +203,47 @@ measure_sgrna_stats <- function(sgcount, design, group_a, group_b, id = NULL) {
     if(!all(group_b %in% design$group)) {
         stop("group_b must be one of the groups in the design data frame.")
     }
-    
-    if(is.data.frame(sgcount) && is.null(id)) {
-        id_pos <- sapply(sgcount, class) == "character"
-        if(sum(id_pos) > 0) {
-            gene_pos <- id_pos & (tolower(colnames(sgcount)) == "gene")
-            if(sum(gene_pos) != 1) {
-                stop("sgcount is supposed to have one column for genes.")
-            }
-        }
-    } 
 
-    group_a <- which(design$group == group_a)
-    group_b <- which(design$group == group_b)
+    if(is.matrix(sgcount)) {
+        if(!is.null(ge_id)||!is.null(sg_id)) {
+            stop("ge_id and sg_id should be NULL if sgcount is a matrix.")
+        }
+    }
+    
+    if(xor(is.null(ge_id), is.null(sg_id))) {
+        stop("Both of ge_id and sg_id should be null or non-null.")    
+    }
+    
+    cname <- colnames(sgcount)
+    if(is.null(ge_id)) {
+        if(!all(sapply(sgcount, class) == "numeric")) {
+            stop(
+                paste0("sgcount contains some character columns. ", 
+                 "It may need to specify both ge_id and sg_id."))
+        }
+        sgcount <- as.matrix(sgcount)
+        cnt_delim <- stringr::str_count(rownames(sgcount), delim)
+        if(!all(cnt_delim == 1)) {
+          stop("Every rownames should contains exact one delimiter.")
+        }
+    }
+    else {
+        if(length(ge_id) != 1) {
+            stop("ge_id should be a character variables.")
+        }
+        if(!(ge_id %in% cname)) {
+            stop("Column of ge_id was not found in sgcount.")
+        }
+        if(!all(sg_id %in% cname)) {
+            stop("Column/columns of sg_id was not found in sgcount.")
+        }
+    }
+
+    group_a <- which(cname %in% design$sample_name[design$group == group_a])
+    group_b <- which(cname %in% design$sample_name[design$group == group_b])
     sgcount_a <- as.matrix(sgcount[, group_a])
     sgcount_b <- as.matrix(sgcount[, group_b])
+    
     nmat_a <- rep.row(colSums(sgcount_a), nrow(sgcount_a))
     nmat_b <- rep.row(colSums(sgcount_b), nrow(sgcount_b))
     est_a <- fit_ab(sgcount_a, nmat_a)
@@ -138,11 +251,13 @@ measure_sgrna_stats <- function(sgcount, design, group_a, group_b, id = NULL) {
     
     # if you have gene colum then get read of this part
     
-    if(is.null(id)) {
+    if(is.null(ge_id)) {
         est <- data.frame(sgRNA = rownames(sgcount), stringsAsFactors=F) %>% as_tibble()
         est$gene <- stringr::str_split(est$sgRNA, "_", simplify = T)[, 1]
     } else {
-        est <- data.frame()
+        est <- data.frame(gene=sgcount[,ge_id])
+        colnames(est)[1] <- "gene"
+        est <- cbind(est, as.data.frame(sgcount[,sg_id]))
     }
     est$n_a <- length(group_a)
     est$n_b <- length(group_b)
@@ -176,7 +291,7 @@ measure_sgrna_stats <- function(sgcount, design, group_a, group_b, id = NULL) {
     est$fdr_ts <- p.adjust(est$p_ts, method = "fdr")
     est$fdr_pa <- p.adjust(est$p_pa, method = "fdr")
     est$fdr_pb <- p.adjust(est$p_pb, method = "fdr")
-    est %>% arrange_(~sgRNA)
+    est
 }
 
 #' A function to perform gene-level test using a sgRNA-level statistics.
@@ -214,18 +329,18 @@ measure_gene_stats <- function(sgrna_stat) {
     }
     sgrna_stat %>% dplyr::group_by_(~gene) %>%
         dplyr::summarise_(
-            n_sgrna = ~ dplyr::n(),
-            cpm_a = ~ mean(cpm_a),
-            cpm_b = ~ mean(cpm_b),
-            logFC = ~ mean(logFC),
-            p_ts = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
-            p_pa = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
-            p_pb = ~ ifelse(dplyr::n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
+            n_sgrna = ~dplyr::n(),
+            cpm_a = ~mean(cpm_a),
+            cpm_b = ~mean(cpm_b),
+            logFC = ~mean(logFC),
+            p_ts = ~ifelse(dplyr::n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
+            p_pa = ~ifelse(dplyr::n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
+            p_pb = ~ifelse(dplyr::n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
         ) %>%
         dplyr::ungroup() %>% dplyr::mutate_(
-            fdr_ts = ~ p.adjust(p_ts, method = "fdr"),
-            fdr_pa = ~ p.adjust(p_pa, method = "fdr"),
-            fdr_pb = ~ p.adjust(p_pb, method = "fdr")
+            fdr_ts = ~p.adjust(p_ts, method = "fdr"),
+            fdr_pa = ~p.adjust(p_pa, method = "fdr"),
+            fdr_pb = ~p.adjust(p_pb, method = "fdr")
         )
 }
 

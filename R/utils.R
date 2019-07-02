@@ -15,8 +15,10 @@ rep.row <- function(x, n) matrix(rep(x, each = n), nrow = n)
 #' 
 #' @export
 get_CPM <- function(sgcount) {
-    nmat <- rep.row(colSums(sgcount), nrow(sgcount))
-    sgcount/nmat * 10^6
+    cols <- which(sapply(sgcount, class) == "numeric")
+    nmat <- rep.row(colSums(sgcount[,cols]), nrow(sgcount[,cols]))
+    sgcount[,cols] <- sgcount[,cols]/nmat * 10^6
+    sgcount
 }
 
 #' A function to plot the first two principal components of samples.
@@ -35,7 +37,8 @@ get_CPM <- function(sgcount) {
 #'  
 #' @export
 plot_PCA <- function(sgcount, df_design) {
-    pca_obj <- sgcount %>% t %>% prcomp
+    cols <- which(sapply(sgcount, class) == "numeric")
+    pca_obj <- sgcount[,cols] %>% t %>% prcomp
     importance <- summary(pca_obj)$importance
     prop_pc1 <- importance[2,1]
     prop_pc2 <- importance[2,2]
@@ -64,7 +67,8 @@ plot_PCA <- function(sgcount, df_design) {
 #' plot_corr_heatmap(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design)
 #' @export
 plot_corr_heatmap <- function(sgcount, df_design, cor_method = "pearson") {
-    sgcount %>% cor(method = cor_method) %>% 
+    cols <- which(sapply(sgcount, class) == "numeric") 
+    sgcount[,cols] %>% cor(method = cor_method) %>% 
         pheatmap::pheatmap(display_numbers = T, 
                            number_format = "%.2f", 
                            annotation_col = df_design %>% 
@@ -113,11 +117,20 @@ calc_mappability <- function(count_obj, df_design) {
 #' @return A tall-thin and combined table of the sgRNA read counts and study design will be returned.
 join_count_and_design <- function(sgcount, df_design) {
     cols <- colnames(sgcount)
-    sgcount %>% as.data.frame(stringsAsFactors=F) %>% 
-        tibble::rownames_to_column("sgRNA") %>% 
-        tidyr::gather_(key_col = "sample_name", value_col = "count", 
-                       gather_cols = cols) %>% 
-        dplyr::left_join(df_design, by = "sample_name") 
+    
+    if(all(sapply(sgcount, class) == "numeric")) {
+        sgcount %>% as.data.frame(stringsAsFactors=F) %>% 
+            tibble::rownames_to_column("sgRNA") %>% 
+            tidyr::gather_(key_col = "sample_name", value_col = "count", 
+                           gather_cols = cols) %>% 
+            dplyr::left_join(df_design, by = "sample_name") 
+    } else {
+        cols <- colnames(sgcount)[sapply(sgcount, class) == "numeric"]
+        sgcount %>% as.data.frame(stringsAsFactors=F) %>% 
+            tidyr::gather_(key_col = "sample_name", value_col = "count", 
+                           gather_cols = cols) %>% 
+            dplyr::left_join(df_design, by = "sample_name") 
+    }
 }
 
 #' A function to plot read count distribution.

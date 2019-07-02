@@ -19,7 +19,9 @@ Imports:
     ggplot2,
     tidyr,
     glue,
-    pheatmap
+    pheatmap,
+    tools,
+    readr
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: 
     testthat,

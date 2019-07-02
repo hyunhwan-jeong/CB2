@@ -78,7 +78,38 @@ test_that("Testing whether the subsampling code works as intended.", {
 test_that("It should allow a table with two columns contains sgRNA information", {
   data(Evers_CRISPRn_RT112)
   df_cb2 <- separate(rownames_to_column(Evers_CRISPRn_RT112$count, "gRNA"), "gRNA", c("gene", "id"))
-  testthat::expect_success(
-    sgrna_ret <- measure_sgrna_stats(df_cb2, Evers_CRISPRn_RT112$design, "before", "afoter")
+  testthat::expect_type(
+    measure_sgrna_stats(df_cb2, Evers_CRISPRn_RT112$design, "before", "after", ge_id = "gene", sg_id = "id"),
+    "list"
   )
 })
+
+
+test_that("Testing error handling of the measure_sgrna_stats.", {
+  data(Evers_CRISPRn_RT112)
+  df_cb2 <- separate(rownames_to_column(Evers_CRISPRn_RT112$count, "gRNA"), "gRNA", c("gene", "id"))
+  
+  
+  expect_error(measure_sgrna_stats(df_cb2, Evers_CRISPRn_RT112$design, "before", "after"),  
+               paste0("sgcount contains some character columns. ", 
+                      "It may need to specify both ge_id and sg_id."))
+
+  expect_error(measure_sgrna_stats(Evers_CRISPRn_RT112$count, 
+                                   Evers_CRISPRn_RT112$design, 
+                                   "before", "after", "-"),  
+               "Every rownames should contains exact one delimiter.")
+  
+  expect_error(measure_sgrna_stats(Evers_CRISPRn_RT112$count, 
+                                   Evers_CRISPRn_RT112$design, 
+                                   "before", "after", 
+                                   ge_id = "A"),  
+               "Both of ge_id and sg_id should be null or non-null.")
+  
+  expect_error(measure_sgrna_stats(df_cb2, Evers_CRISPRn_RT112$design, 
+                                   "before", "after", ge_id = c("A", "B"),
+                                   sg_id = c("A", "B")),  
+               "ge_id should be a character variables")
+  
+  
+})
+

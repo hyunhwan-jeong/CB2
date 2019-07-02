@@ -7,6 +7,15 @@
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 
 We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are also implemented in [CRISPRCloud](http://crispr.nrihub.org/).
 
+## Update
+
+### July 2, 2019 
+
+There are several updates.
+
+* We have change the function name for the sgRNA-level test to `measure_sgrna_stats`. The original name `run_estimation` has been *deprecated*.
+* CB<sup>2</sup> now supports a `data.frame` with character columns. In other words, you can use 
+
 ## How to install
 
 Currently CB<sup>2</sup> is now on `CRAN`, and you can install it using `install.package` function.
@@ -50,9 +59,19 @@ for(g in c("Low", "High", "Base")) {
   }
 }
 
-sgrna_count <- run_sgrna_quant(FASTA, df_design)
-sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, "Base", "Low")
+MAP_FILE <- system.file("extdata", "toydata", "sg2gene.csv", package="CB2")
+sgrna_count <- run_sgrna_quant(FASTA, df_design, MAP_FILE)
+  
+sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, 
+                                  "Base", "Low", 
+                                  ge_id = "gene",
+                                  sg_id = "id")
 gene_stat <- measure_gene_stats(sgrna_stat)
+
+# Or you could do run the example with the following commented code.
+# sgrna_count <- run_sgrna_quant(FASTA, df_design)
+# sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, "Base", "Low")
+# gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```
 

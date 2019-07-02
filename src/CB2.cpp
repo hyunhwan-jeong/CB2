@@ -15,7 +15,9 @@ using namespace arma;
 //' @useDynLib CB2
 //' @export
 // [[Rcpp::export]]
-Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path, Rcpp::Nullable<double> sample_ratio) {
+Rcpp::List quant(std::string ref_path, 
+                 std::vector<std::string> fastq_path, 
+                 Rcpp::Nullable<double> sample_ratio) {
   gRNA_Reference ref(ref_path.c_str());
   Rcpp::DataFrame df = Rcpp::DataFrame();
   std::vector<long long> sgRNA_hash;

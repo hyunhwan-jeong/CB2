@@ -128,10 +128,10 @@ plot_corr_heatmap(cb2_count$count %>% get_CPM, df_design)
 ```
 
 
-After we find the data quality is good to move to the next step, then we can perform an analysis for a sgRNA-level using `run_estimation.`
+After we find the data quality is good to move to the next step, then we can perform an analysis for a sgRNA-level using `measure_sgrna_stats`
 
 ```{r}
-sgrna_stat <- run_estimation(cb2_count$count, df_design, "High", "Base")
+sgrna_stat <- measure_sgrna_stats(cb2_count$count, df_design, "High", "Base")
 sgrna_stat
 ```
 

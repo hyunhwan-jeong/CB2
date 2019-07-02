@@ -62,6 +62,7 @@ run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
 #' @param design This table contains study design. It has to contain `group.`
 #' @param group_a The first group to be tested.
 #' @param group_b The second group to be tested.
+#' @param id The column/columns of sgRNA identifiers.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble as_tibble
@@ -92,10 +93,14 @@ run_sgrna_quant <- function(lib_path, design, sampling_ratio = NULL) {
 #' @examples 
 #' library(CB2)
 #' data(Evers_CRISPRn_RT112)
-#' run_estimation(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
+#' measure_sgrna_stats(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
 #' 
 #' @export
-run_estimation <- function(sgcount, design, group_a, group_b) {
+measure_sgrna_stats <- function(sgcount, design, group_a, group_b, id = NULL) {
+
+    if(!is.data.frame(sgcount) && !is.matrix(sgcount)) {
+        stop("sgcount has to be either a data.frame or a matrix.")    
+    }
     
     if(!all(c("sample_name", "group") %in% colnames(design))) {
         stop("The design table should have both `sample_name` and `group` columns.")    
@@ -112,6 +117,16 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
         stop("group_b must be one of the groups in the design data frame.")
     }
     
+    if(is.data.frame(sgcount) && is.null(id)) {
+        id_pos <- sapply(sgcount, class) == "character"
+        if(sum(id_pos) > 0) {
+            gene_pos <- id_pos & (tolower(colnames(sgcount)) == "gene")
+            if(sum(gene_pos) != 1) {
+                stop("sgcount is supposed to have one column for genes.")
+            }
+        }
+    } 
+
     group_a <- which(design$group == group_a)
     group_b <- which(design$group == group_b)
     sgcount_a <- as.matrix(sgcount[, group_a])
@@ -122,8 +137,13 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
     est_b <- fit_ab(sgcount_b, nmat_b)
     
     # if you have gene colum then get read of this part
-    est <- data.frame(sgRNA = rownames(sgcount), stringsAsFactors=F) %>% as_tibble()
-    est$gene <- stringr::str_split(est$sgRNA, "_", simplify = T)[, 1]
+    
+    if(is.null(id)) {
+        est <- data.frame(sgRNA = rownames(sgcount), stringsAsFactors=F) %>% as_tibble()
+        est$gene <- stringr::str_split(est$sgRNA, "_", simplify = T)[, 1]
+    } else {
+        est <- data.frame()
+    }
     est$n_a <- length(group_a)
     est$n_b <- length(group_b)
     est$phat_a <- est_a$phat
@@ -161,7 +181,7 @@ run_estimation <- function(sgcount, design, group_a, group_b) {
 
 #' A function to perform gene-level test using a sgRNA-level statistics.
 #' 
-#' @param sgrna_stat A data frame created by `run_estimation'
+#' @param sgrna_stat A data frame created by `measure_sgrna_stats'
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble

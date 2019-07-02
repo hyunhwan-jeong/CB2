@@ -1,5 +1,5 @@
 [![](https://cranlogs.r-pkg.org/badges/CB2)](https://cran.r-project.org/package=CB2)
-[![](https://img.shields.io/cran/l/CB2.svg)](https://cran.r-project.org/web/packages/CB2/LICENSE)
+[![](https://img.shields.io/cran/l/CB2.svg)](https://cran.r-project.org/package=CB2/LICENSE)
 
 
 ## What is CB<sup>2</sup>
@@ -51,9 +51,9 @@ for(g in c("Low", "High", "Base")) {
 }
 
 sgrna_count <- run_sgrna_quant(FASTA, df_design)
-sgrna_stat <- run_estimation(sgrna_count$count, df_design, "Base", "Low")
+sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, "Base", "Low")
 gene_stat <- measure_gene_stats(sgrna_stat)
 
 ```
 
-More detailed tutorial is available [here](https://cran.r-project.org/web/packages/CB2/vignettes/cb2-tutorial.html)!
+More detailed tutorial is available [here](https://CRAN.R-project.org/package=CB2/vignettes/cb2-tutorial.html)!

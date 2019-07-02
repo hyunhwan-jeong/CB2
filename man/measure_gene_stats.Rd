@@ -7,7 +7,7 @@
 measure_gene_stats(sgrna_stat)
 }
 \arguments{
-\item{sgrna_stat}{A data frame created by `run_estimation'}
+\item{sgrna_stat}{A data frame created by `measure_sgrna_stats'}
 }
 \value{
 A table contains the gene-level test result, and the table contains these columns: 

@@ -96,7 +96,6 @@ run_sgrna_quant <- function(lib_path,
 #' @param delim The delimiter between a gene name and a sgRNA ID. It will be used if only rownames contains sgRNA ID.
 #' @param ge_id The column name of the gene column.
 #' @param sg_id The column/columns of sgRNA identifiers.
-
 #' @return A table contains the sgRNA-level test result, and the table contains these columns: 
 #' \itemize{
 #'  \item `sgRNA': The sgRNA identifier.
@@ -119,7 +118,6 @@ run_sgrna_quant <- function(lib_path,
 #'  \item `fdr_pa': The adjusted P-value of `p_pa'.
 #'  \item `fdr_pb': The adjusted P-value of `p_pb'.
 #' }
-#' 
 #' @export
 run_estimation <- function( sgcount, design, 
                             group_a, group_b, 
@@ -258,6 +256,8 @@ measure_sgrna_stats <- function(sgcount, design,
         est <- data.frame(gene=sgcount[,ge_id])
         colnames(est)[1] <- "gene"
         est <- cbind(est, as.data.frame(sgcount[,sg_id]))
+        est <- data.frame(gene = sgcount[,ge_id])
+        est <- cbind(est, sgcount[,sg_id])
     }
     est$n_a <- length(group_a)
     est$n_b <- length(group_b)

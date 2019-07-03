@@ -49,3 +49,12 @@ A table contains the sgRNA-level test result, and the table contains these colum
 \description{
 A function to perform a statistical test at a sgRNA-level, deprecated.
 }
+<<<<<<< HEAD
+=======
+\examples{
+library(CB2)
+data(Evers_CRISPRn_RT112)
+run_estimation(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
+
+}
+>>>>>>> 82ab2ebb182290aedf4357058f281e9566b58052

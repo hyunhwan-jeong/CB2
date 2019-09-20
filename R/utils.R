@@ -149,7 +149,7 @@ join_count_and_design <- function(sgcount, df_design) {
 #' @export
 plot_count_distribution <- function(sgcount, df_design) {
     join_count_and_design(sgcount, df_design) %>% 
-        dplyr::mutate_(count = ~ 1+log2(count)) %>% 
+        dplyr::mutate_(count = ~ log2(1+count)) %>% 
         ggplot2::ggplot(ggplot2::aes_string(x="count")) + 
         ggplot2::geom_density(ggplot2::aes_string(fill = "group")) + 
         ggplot2::facet_wrap(~sample_name, ncol = 1) +
@@ -160,6 +160,9 @@ plot_count_distribution <- function(sgcount, df_design) {
 #' @param sgcount The input matrix contains read counts of sgRNAs for each sample.
 #' @param df_design The table contains a study design.
 #' @param gene The gene to be shown.
+#' @param ge_id A name of the column contains gene names.
+#' @param sg_id A name of the column contains sgRNA IDs.
+#' 
 #' @importFrom stats prcomp
 #' @return A ggplot2 object contains dot plots of sgRNA read counts for a gene.
 #' 
@@ -169,14 +172,37 @@ plot_count_distribution <- function(sgcount, df_design) {
 #' plot_dotplot(get_CPM(Evers_CRISPRn_RT112$count), Evers_CRISPRn_RT112$design, "RPS7")
 #' 
 #' @export 
-plot_dotplot <- function(sgcount, df_design, gene) {
-    if(sum(stringr::str_detect(rownames(sgcount), glue::glue("^{gene}")))==0) {
-        stop(glue::glue("{gene} is not in sgcount."))
+plot_dotplot <- function(sgcount, df_design, gene, ge_id = NULL, sg_id = NULL) {
+    if(all(sapply(sgcount, class) == "numeric")) {
+        if(sum(stringr::str_detect(rownames(sgcount), glue::glue("^{gene}")))==0) {
+            stop(glue::glue("{gene} is not in sgcount."))
+        }
+        
+        join_count_and_design(sgcount, df_design) %>% 
+            dplyr::filter_(~stringr::str_detect(sgRNA, glue::glue("^{gene}"))) %>% 
+            ggplot2::ggplot(ggplot2::aes_string(x = "group", y = "count")) + 
+            ggplot2::geom_dotplot(ggplot2::aes_string(fill = "group", color = "group"), binaxis = "y", stackdir = "center", stackratio = 1.5, dotsize = 1.2) + 
+            ggplot2::facet_wrap(~sgRNA, scales = "free_y") + ggplot2::ggtitle(gene)
+    } else {
+        if(is.null(ge_id) || is.null(sg_id)) {
+            stop("ge_id and sg_id should not be null.")
+        }
+        if(!(ge_id %in% colnames(sgcount))) {
+            stop("ge_id is not found in sgcount.")
+        } 
+        if(!(sg_id %in% colnames(sgcount))) {
+            stop("sg_id is not found in sgcount.")
+        } 
+        
+        df <- join_count_and_design(sgcount, df_design)
+        df <- df[df[,ge_id]==gene,]
+        if(nrow(df) == 0) {
+            stop(glue::glue("{gene} is not in sgcount."))
+        }
+        df %>% ggplot2::ggplot(ggplot2::aes_string(x = "group", y = "count")) + 
+            ggplot2::geom_dotplot(ggplot2::aes_string(fill = "group", color = "group"), binaxis = "y", stackdir = "center", stackratio = 1.5, dotsize = 1.2) + 
+            ggplot2::facet_wrap(as.formula(paste("~", sg_id)), scales = "free_y") + ggplot2::ggtitle(gene)
     }
-
-    join_count_and_design(sgcount, df_design) %>% 
-        dplyr::filter_(~stringr::str_detect(sgRNA, glue::glue("^{gene}"))) %>% 
-        ggplot2::ggplot(ggplot2::aes_string(x = "group", y = "count")) + 
-        ggplot2::geom_dotplot(ggplot2::aes_string(fill = "group", color = "group"), binaxis = "y", stackdir = "center", stackratio = 1.5, dotsize = 1.2) + 
-        ggplot2::facet_wrap(~sgRNA, scales = "free_y")
+    
 }
+

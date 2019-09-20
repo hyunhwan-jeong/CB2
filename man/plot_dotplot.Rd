@@ -4,7 +4,7 @@
 \alias{plot_dotplot}
 \title{A function to visualize dot plots for a gene.}
 \usage{
-plot_dotplot(sgcount, df_design, gene)
+plot_dotplot(sgcount, df_design, gene, ge_id = NULL, sg_id = NULL)
 }
 \arguments{
 \item{sgcount}{The input matrix contains read counts of sgRNAs for each sample.}
@@ -12,6 +12,10 @@ plot_dotplot(sgcount, df_design, gene)
 \item{df_design}{The table contains a study design.}
 
 \item{gene}{The gene to be shown.}
+
+\item{ge_id}{A name of the column contains gene names.}
+
+\item{sg_id}{A name of the column contains sgRNA IDs.}
 }
 \value{
 A ggplot2 object contains dot plots of sgRNA read counts for a gene.

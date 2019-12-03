@@ -4,8 +4,7 @@
 \alias{run_sgrna_quant}
 \title{A function to run a sgRNA quantification algorithm from NGS sample}
 \usage{
-run_sgrna_quant(lib_path, design, map_path = NULL,
-  sampling_ratio = NULL)
+run_sgrna_quant(lib_path, design, map_path = NULL, sampling_ratio = NULL)
 }
 \arguments{
 \item{lib_path}{The path of the FASTA file.}

@@ -2,7 +2,6 @@
 #' 
 #' @param lib_path The path of the FASTA file.
 #' @param design A table contains the study design. It must contain `fastq_path` and `sample_name.`
-#' @param sampling_ratio NULL as a default, and will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.
 #' @param map_path The path of file contains gene-sgRNA mapping.
 #' 
 #' @importFrom tools file_ext
@@ -35,8 +34,7 @@
 #' @export
 run_sgrna_quant <- function(lib_path, 
                             design, 
-                            map_path = NULL,
-                            sampling_ratio = NULL) {
+                            map_path = NULL) {
     # `design` has to be table `design` has to have four columns: sample_name, group, fastq_path
     if(!all(c("sample_name", "fastq_path") %in% colnames(design))) {
         stop("The design data frame should have both `sample_name` and `fastq_path` columns.")    
@@ -59,7 +57,7 @@ run_sgrna_quant <- function(lib_path,
     
     lib_path <- normalizePath(lib_path)
     design$fastq_path <- normalizePath(design$fastq_path)
-    quant_ret <- quant(lib_path, design$fastq_path, sampling_ratio)
+    quant_ret <- quant(lib_path, design$fastq_path)
     
     if(is.null(map_path)) {
         df_count <- as.data.frame(quant_ret$count)

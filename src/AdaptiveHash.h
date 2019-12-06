@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <cassert>
 #include <ctime>
+#include "gzstream.h"
 using namespace std;
 
 struct gRNA_Reference {
@@ -79,7 +80,7 @@ struct sgRNA_MAP {
   long long tot_reads_len;
   bool is_rc;
   gRNA_Reference &ref;
-  void run_MAP(const char *f_seq, bool need_subsample, double subsample_ratio) {
+  void run_MAP(const char *f_seq, bool is_gzipped = false) {
     Rcpp::Rcerr << "Reading " << f_seq << endl;
     string line;
     int num_line = 0;
@@ -94,13 +95,8 @@ struct sgRNA_MAP {
 
     ifstream inp(f_seq);
     
-    if(need_subsample) {
-      REprintf("Sub-samping has been enabled. Only %.2f%% of the read will be counted.\n", subsample_ratio * 100.0);
-    }
     while(getline(inp, line)) {
       if(num_line++%4!=1) continue;
-      
-      if(need_subsample && R::runif(0, 1) > subsample_ratio) continue;
       
       tot_reads_len += line.size();
       if(++num_proc_line%int(1e6)==0) {

@@ -163,7 +163,7 @@ plot_count_distribution <- function(sgcount, df_design) {
 #' @param ge_id A name of the column contains gene names.
 #' @param sg_id A name of the column contains sgRNA IDs.
 #' 
-#' @importFrom stats prcomp
+#' @importFrom stats prcomp as.formula
 #' @return A ggplot2 object contains dot plots of sgRNA read counts for a gene.
 #' 
 #' @examples 

@@ -4,8 +4,15 @@
 \alias{measure_sgrna_stats}
 \title{A function to perform a statistical test at a sgRNA-level}
 \usage{
-measure_sgrna_stats(sgcount, design, group_a, group_b, delim = "_",
-  ge_id = NULL, sg_id = NULL)
+measure_sgrna_stats(
+  sgcount,
+  design,
+  group_a,
+  group_b,
+  delim = "_",
+  ge_id = NULL,
+  sg_id = NULL
+)
 }
 \arguments{
 \item{sgcount}{This data frame contains read counts of sgRNAs for the samples.}

@@ -28,7 +28,7 @@ Installation Github version of CB<sup>2</sup> can be done using the following li
 
 ```r
 install.packages("devtools")
-devtools::install_github("hyunhwaj/CB2")
+devtools::install_github("LiuzLab/CB2")
 ```
 
 Alternatively, here is a one-liner command line for the installation.

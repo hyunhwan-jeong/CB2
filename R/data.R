@@ -10,6 +10,11 @@
 #'   \item{sg_stat}{The data.frame contains the sgRNA-level statistics.}
 #'   \item{gene_stat}{The data.frame contains the gene-level statistics.}
 #' }
+#' 
+#' @docType data
+#'
+#' @usage data(Evers_CRISPRn_RT112)
+#'
 #' @source \url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
 "Evers_CRISPRn_RT112"
 
@@ -24,5 +29,10 @@
 #'   \item{ngenes}{The list of 927 non-essential genes used in Sanson et al.'s study.}
 #'   \item{design}{The data.frame contains study design.}
 #' }
+#' 
+#' @docType data
+#'
+#' @usage data(Sanson_CRISPRn_A375)
+#'
 #' @source \url{https://www.ncbi.nlm.nih.gov/pubmed/30575746}
 "Sanson_CRISPRn_A375"

@@ -4,7 +4,7 @@
 \alias{run_sgrna_quant}
 \title{A function to run a sgRNA quantification algorithm from NGS sample}
 \usage{
-run_sgrna_quant(lib_path, design, map_path = NULL, sampling_ratio = NULL)
+run_sgrna_quant(lib_path, design, map_path = NULL)
 }
 \arguments{
 \item{lib_path}{The path of the FASTA file.}
@@ -12,8 +12,6 @@ run_sgrna_quant(lib_path, design, map_path = NULL, sampling_ratio = NULL)
 \item{design}{A table contains the study design. It must contain `fastq_path` and `sample_name.`}
 
 \item{map_path}{The path of file contains gene-sgRNA mapping.}
-
-\item{sampling_ratio}{NULL as a default, and will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.}
 }
 \value{
 It will return a list, and the list contains three elements. 

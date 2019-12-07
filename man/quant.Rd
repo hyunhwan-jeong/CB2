@@ -4,14 +4,12 @@
 \alias{quant}
 \title{A C++ function to quantify sgRNA abundance from NGS samples.}
 \usage{
-quant(ref_path, fastq_path, sample_ratio)
+quant(ref_path, fastq_path)
 }
 \arguments{
 \item{ref_path}{the path of the annotation file and it has to be a FASTA formatted file.}
 
 \item{fastq_path}{a list of the FASTQ files.}
-
-\item{sample_ratio}{will be treated as a ratio of the subsamping for each NGS file if a numeric value belongs to the parameter.}
 }
 \description{
 A C++ function to quantify sgRNA abundance from NGS samples.

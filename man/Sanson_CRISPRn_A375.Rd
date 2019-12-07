@@ -16,7 +16,7 @@
 \url{https://www.ncbi.nlm.nih.gov/pubmed/30575746}
 }
 \usage{
-Sanson_CRISPRn_A375
+data(Sanson_CRISPRn_A375)
 }
 \description{
 A benchmark CRISPRn pooled screen data from Sanson et al.

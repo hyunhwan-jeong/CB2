@@ -18,7 +18,7 @@
 \url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
 }
 \usage{
-Evers_CRISPRn_RT112
+data(Evers_CRISPRn_RT112)
 }
 \description{
 A benchmark CRISPRn pooled screen data from Evers et al.

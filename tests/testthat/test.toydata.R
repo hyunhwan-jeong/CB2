@@ -41,26 +41,6 @@ test_that("A very simple sanity check", {
 })
 
 
-test_that("Testing whether subsamplings with the same seed are identical.", {
-  set.seed(123)
-  cb2_count <- run_sgrna_quant(FASTA, df_design, sampling_ratio = 0.5)
-  
-  set.seed(123)
-  cb2_count2 <- run_sgrna_quant(FASTA, df_design, sampling_ratio = 0.5)
-  
-  expect_identical(cb2_count, cb2_count2)
-})
-
-test_that("Testing whether the subsampling code works as intended.", {
-  cb2_count_nosubs <- run_sgrna_quant(FASTA, df_design)
-
-  for( i in seq(0.1, 0.9, 0.1)) {
-    set.seed(123)
-    cb2_count <- run_sgrna_quant(FASTA, df_design, sampling_ratio = i)
-    expect_equal(sum(dplyr::between(cb2_count$total / cb2_count_nosubs$total, i-0.1, i+0.1)), length(cb2_count$total))
-  }
-})
-
 # test_that("The result has to be consistent to the publication", {
 #   data("Sanson_CRISPRn_A375")
 #   published <- read.csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/results/Sanson/CRISPRn-A375/FDR/CB2.csv")

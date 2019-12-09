@@ -57,7 +57,9 @@ run_sgrna_quant <- function(lib_path,
     
     lib_path <- normalizePath(lib_path)
     design$fastq_path <- normalizePath(design$fastq_path)
-    quant_ret <- quant(lib_path, design$fastq_path)
+    
+    is_gzipped <- endsWith(tolower(design$fastq_path), ".gz")
+    quant_ret <- quant(lib_path, design$fastq_path, is_gzipped)
     
     if(is.null(map_path)) {
         df_count <- as.data.frame(quant_ret$count)

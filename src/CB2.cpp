@@ -9,13 +9,15 @@ using namespace arma;
 //'
 //' @param ref_path the path of the annotation file and it has to be a FASTA formatted file.
 //' @param fastq_path a list of the FASTQ files.
+//' @param is_gzipped a vector that indicates which files are gzipped.
 //'
 //' @importFrom Rcpp evalCpp
 //' @useDynLib CB2
 //' @export
 // [[Rcpp::export]]
 Rcpp::List quant(std::string ref_path, 
-                 std::vector<std::string> fastq_path) {
+                 std::vector<std::string> fastq_path,
+                 std::vector<bool> is_gzipped) {
   gRNA_Reference ref(ref_path.c_str());
   Rcpp::DataFrame df = Rcpp::DataFrame();
   std::vector<long long> sgRNA_hash;
@@ -32,7 +34,7 @@ Rcpp::List quant(std::string ref_path,
   int j = 0;
   for(auto &f : fastq_path) {
     sgRNA_MAP smap(ref);
-    smap.run_MAP(f.c_str());
+    smap.run_MAP(f.c_str(), is_gzipped[j]);
     for(int i = 0; i < N ; ++i) {
       sgRNA_count(i,j) = smap.cnt[sgRNA_hash[i]];
     }

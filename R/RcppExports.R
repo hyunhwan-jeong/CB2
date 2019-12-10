@@ -6,12 +6,13 @@
 #' @param ref_path the path of the annotation file and it has to be a FASTA formatted file.
 #' @param fastq_path a list of the FASTQ files.
 #' @param is_gzipped a vector that indicates which files are gzipped.
+#' @param verbose Display some logs during the quantification if it is set to `true`.
 #'
 #' @importFrom Rcpp evalCpp
 #' @useDynLib CB2
 #' @export
-quant <- function(ref_path, fastq_path, is_gzipped) {
-    .Call('_CB2_quant', PACKAGE = 'CB2', ref_path, fastq_path, is_gzipped)
+quant <- function(ref_path, fastq_path, is_gzipped, verbose = FALSE) {
+    .Call('_CB2_quant', PACKAGE = 'CB2', ref_path, fastq_path, is_gzipped, verbose)
 }
 
 #' A C++ function to perform a parameter estimation for the sgRNA-level test. 

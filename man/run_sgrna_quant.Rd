@@ -4,7 +4,7 @@
 \alias{run_sgrna_quant}
 \title{A function to run a sgRNA quantification algorithm from NGS sample}
 \usage{
-run_sgrna_quant(lib_path, design, map_path = NULL)
+run_sgrna_quant(lib_path, design, map_path = NULL, ncores = 1, verbose = FALSE)
 }
 \arguments{
 \item{lib_path}{The path of the FASTA file.}
@@ -12,6 +12,12 @@ run_sgrna_quant(lib_path, design, map_path = NULL)
 \item{design}{A table contains the study design. It must contain `fastq_path` and `sample_name.`}
 
 \item{map_path}{The path of file contains gene-sgRNA mapping.}
+
+\item{ncores}{The number that indicates how many processors will be used with a parallelization. 
+The parallelization will be enabled if users do not set the parameter as `-1`` 
+(it means the full physical core will be used) or greater than `1`.}
+
+\item{verbose}{Display some logs during the quantification if it is set to `TRUE`}
 }
 \value{
 It will return a list, and the list contains three elements. 

@@ -1,11 +1,11 @@
 Package: CB2
 Type: Package
 Title: CRISPR Pooled Screen Analysis using Beta-Binomial Test
-Version: 1.2.2
-Date: 2019-12-03
+Version: 1.3.0
+Date: 2019-12-10
 Authors@R: 
   c(person(given = "Hyun-Hwan", family = "Jeong", role = c("aut", "cre"), email = "hyun-hwan.jeong@bcm.edu"))
-Description: Provides functions for hit gene identification and  quantification of sgRNA (single-guided RNA) abundances for CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) pooled screen data analysis. 
+Description: Provides functions for hit gene identification and quantification of sgRNA (single-guided RNA) abundances for CRISPR (Clustered Regularly Interspaced Short Palindromic Repeats) pooled screen data analysis. 
   Details are in Jeong et al. (2019) <doi:10.1101/gr.245571.118> and Baggerly et al. (2003) <doi:10.1093/bioinformatics/btg173>. 
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
@@ -22,7 +22,8 @@ Imports:
     glue,
     pheatmap,
     tools,
-    readr
+    readr,
+    parallel
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: 
     testthat,

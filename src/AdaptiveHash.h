@@ -21,7 +21,7 @@ struct gRNA_Reference {
   unordered_map<long long, string> lib;
   vector<string> seq;
   
-  gRNA_Reference(const char *f_lib) {
+  gRNA_Reference(const char *f_lib, bool verbose = false) {
     ifstream inp(f_lib);
     
     string name, se;
@@ -40,7 +40,10 @@ struct gRNA_Reference {
       }
     } 
    
-    Rcpp::Rcerr << tot_dups << " sgRNA sequences were repetitive and will be discarded." << endl; 
+    if(verbose) {
+      Rcpp::Rcerr << tot_dups << " sgRNA sequences were repetitive and will be discarded." << endl;   
+    }   
+    
     lib_seq_len = 20;
     
     inp.close();
@@ -62,8 +65,11 @@ struct gRNA_Reference {
       seq.push_back(se);
     }
     inp.close();
-    Rcpp::Rcerr << "CB2 Detects the length of guided RNA is " << lib_seq_len << endl;
-    Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+    
+    if(verbose) {
+      Rcpp::Rcerr << "CB2 Detects the length of guided RNA is " << lib_seq_len << endl;
+      Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+    }
   } 
   
 };
@@ -81,6 +87,8 @@ struct sgRNA_MAP {
   bool is_rc;
   long long mod;
   gRNA_Reference &ref;
+  
+  bool verbose;
   
   void search(string &line) {
     const static int rc[] = {2, 3, 0, 1};
@@ -142,7 +150,10 @@ struct sgRNA_MAP {
   }
   
   void run_MAP(const char *f_seq, bool is_gzipped = false) {
-    Rcpp::Rcerr << "Reading " << f_seq << endl;
+    
+    if(verbose) {
+      Rcpp::Rcerr << "Reading " << f_seq << endl;
+    }
     string line;
     int num_line = 0;
     is_rc = false;
@@ -160,15 +171,18 @@ struct sgRNA_MAP {
         if(num_line++%4!=1) continue;
         
         tot_reads_len += line.size();
-        if(++num_proc_line%int(1e6)==0) {
+        if(++num_proc_line%int(1e6)==0 && verbose) {
           Rcpp::Rcerr << "Processing " << num_proc_line << "th line..." << endl;
           Rcpp::Rcerr << "Current Mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
         }
         
         search(line);
       }
-      Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
-      Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+      
+      if(verbose) {
+        Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
+        Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+      }
       
       inp.close();
       
@@ -194,15 +208,17 @@ struct sgRNA_MAP {
         if(num_line++%4!=1) continue;
         
         tot_reads_len += line.size();
-        if(++num_proc_line%int(1e6)==0) {
+        if(++num_proc_line%int(1e6)==0 && verbose) {
           Rcpp::Rcerr << "Processing " << num_proc_line << "th line..." << endl;
           Rcpp::Rcerr << "Current Mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
         }
         
         search(line);
       }
-      Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
-      Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+      if(verbose) {
+        Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
+        Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+      }
       
       inp.close();
       
@@ -212,7 +228,7 @@ struct sgRNA_MAP {
     }
 
   }
-  sgRNA_MAP(gRNA_Reference &r) : ref(r) {}
+  sgRNA_MAP(gRNA_Reference &r, bool v) : ref(r), verbose(v) {}
 };
 
 #endif

@@ -7,15 +7,16 @@
 using namespace Rcpp;
 
 // quant
-Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path, std::vector<bool> is_gzipped);
-RcppExport SEXP _CB2_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP, SEXP is_gzippedSEXP) {
+Rcpp::List quant(std::string ref_path, std::vector<std::string> fastq_path, std::vector<bool> is_gzipped, bool verbose);
+RcppExport SEXP _CB2_quant(SEXP ref_pathSEXP, SEXP fastq_pathSEXP, SEXP is_gzippedSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type ref_path(ref_pathSEXP);
     Rcpp::traits::input_parameter< std::vector<std::string> >::type fastq_path(fastq_pathSEXP);
     Rcpp::traits::input_parameter< std::vector<bool> >::type is_gzipped(is_gzippedSEXP);
-    rcpp_result_gen = Rcpp::wrap(quant(ref_path, fastq_path, is_gzipped));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(quant(ref_path, fastq_path, is_gzipped, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -33,7 +34,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_CB2_quant", (DL_FUNC) &_CB2_quant, 3},
+    {"_CB2_quant", (DL_FUNC) &_CB2_quant, 4},
     {"_CB2_fit_ab", (DL_FUNC) &_CB2_fit_ab, 2},
     {NULL, NULL, 0}
 };

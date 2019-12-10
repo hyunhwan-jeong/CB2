@@ -64,6 +64,12 @@ test_that("Check whether CB2 can handle gzipped file", {
 })
 
 
+test_that("Test parallelized quantification.", {
+    testthat::expect_length(run_sgrna_quant(FASTA, df_design, ncores = 1), 3)
+    #testthat::expect_length(run_sgrna_quant(FASTA, df_design, ncores = -1), 3)
+    testthat::expect_length(run_sgrna_quant(FASTA, df_design, ncores = 2), 3)
+})
+
 # test_that("The result has to be consistent to the publication", {
 #   data("Sanson_CRISPRn_A375")
 #   published <- read.csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/results/Sanson/CRISPRn-A375/FDR/CB2.csv")

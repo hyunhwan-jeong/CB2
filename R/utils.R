@@ -150,8 +150,8 @@ join_count_and_design <- function(sgcount, df_design) {
 plot_count_distribution <- function(sgcount, df_design) {
     join_count_and_design(sgcount, df_design) %>% 
         dplyr::mutate_(count = ~ log2(1+count)) %>% 
-        ggplot2::ggplot(ggplot2::aes_string(x="count")) + 
-        ggplot2::geom_density(ggplot2::aes_string(fill = "group")) + 
+        ggplot2::ggplot(ggplot2::aes_string(y="count", x="group")) + 
+        ggplot2::geom_violin(ggplot2::aes_string(fill = "group")) + 
         ggplot2::facet_wrap(~sample_name, ncol = 1) +
         ggplot2::xlab("log2(1+count)")
 }

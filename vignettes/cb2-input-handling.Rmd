@@ -1,0 +1,17 @@
+---
+title: "Handling the input matrix in CB2"
+author: "Hyun-Hwan Jeong"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Handling the input matrix in CB2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+If 
+  
+```{r}
+library(CB2)
+```
+

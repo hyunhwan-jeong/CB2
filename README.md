@@ -67,12 +67,14 @@ sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design,
                                   ge_id = "gene",
                                   sg_id = "id")
 gene_stat <- measure_gene_stats(sgrna_stat)
+```
 
-# Or you could do run the example with the following commented code.
-# sgrna_count <- run_sgrna_quant(FASTA, df_design)
-# sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, "Base", "Low")
-# gene_stat <- measure_gene_stats(sgrna_stat)
+Or you could run the example with the following commented code.
 
+```r
+sgrna_count <- run_sgrna_quant(FASTA, df_design)
+sgrna_stat <- measure_sgrna_stats(sgrna_count$count, df_design, "Base", "Low")
+gene_stat <- measure_gene_stats(sgrna_stat)
 ```
 
 More detailed tutorial is available [here](https://CRAN.R-project.org/package=CB2/vignettes/cb2-tutorial.html)!

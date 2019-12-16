@@ -11,8 +11,8 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ### December 16, 2019
 
-* Regarding #4, CB<sup>2</sup> now supports gzipped FASTQ file.
-* Regarding #5, `calc_mappability()` provide `total_reads` and `mapped_reads` columns.
+* Regarding [#4](https://github.com/LiuzLab/CB2/issues/4), CB<sup>2</sup> now supports gzipped FASTQ file.
+* Regarding [#5](https://github.com/LiuzLab/CB2/issues/5), `calc_mappability()` provide `total_reads` and `mapped_reads` columns.
 
 ### July 2, 2019 
 

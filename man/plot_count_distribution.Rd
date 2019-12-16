@@ -4,12 +4,14 @@
 \alias{plot_count_distribution}
 \title{A function to plot read count distribution.}
 \usage{
-plot_count_distribution(sgcount, df_design)
+plot_count_distribution(sgcount, df_design, add_dots = FALSE)
 }
 \arguments{
 \item{sgcount}{The input matrix contains read counts of sgRNAs for each sample.}
 
 \item{df_design}{The table contains a study design.}
+
+\item{add_dots}{The function will display dots of sgRNA counts if it is set to `TRUE`.}
 }
 \value{
 A ggplot2 object contains a read count distribution plot for `sgcount`.

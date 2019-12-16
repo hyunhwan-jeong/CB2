@@ -4,14 +4,12 @@
 \alias{quant}
 \title{A C++ function to quantify sgRNA abundance from NGS samples.}
 \usage{
-quant(ref_path, fastq_path, is_gzipped, verbose = FALSE)
+quant(ref_path, fastq_path, verbose = FALSE)
 }
 \arguments{
 \item{ref_path}{the path of the annotation file and it has to be a FASTA formatted file.}
 
 \item{fastq_path}{a list of the FASTQ files.}
-
-\item{is_gzipped}{a vector that indicates which files are gzipped.}
 
 \item{verbose}{Display some logs during the quantification if it is set to `true`.}
 }

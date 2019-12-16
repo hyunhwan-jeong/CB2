@@ -15,7 +15,7 @@ run_sgrna_quant(lib_path, design, map_path = NULL, ncores = 1, verbose = FALSE)
 
 \item{ncores}{The number that indicates how many processors will be used with a parallelization. 
 The parallelization will be enabled if users do not set the parameter as `-1`` 
-(it means the full physical core will be used) or greater than `1`.}
+(it means the full physical cores will be used) or greater than `1`.}
 
 \item{verbose}{Display some logs during the quantification if it is set to `TRUE`}
 }

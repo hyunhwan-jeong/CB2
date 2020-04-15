@@ -105,7 +105,11 @@ plot_corr_heatmap <- function(sgcount, df_design, cor_method = "pearson") {
 calc_mappability <- function(count_obj, df_design) {
     csum <- count_obj$count %>% colSums()
     mp <- csum/count_obj$total * 100
-    df_design %>% dplyr::mutate_(mappability = ~mp) %>% dplyr::select_(.dots = c("-fastq_path"))
+    df_design %>% 
+        dplyr::mutate_(total_reads = ~count_obj$total) %>% 
+        dplyr::mutate_(mapped_reads = ~csum) %>% 
+        dplyr::mutate_(mappability = ~mp) %>% 
+        dplyr::select_(.dots = c("-fastq_path"))
 }
 
 #' A function to join a count table and a design table.
@@ -144,6 +148,7 @@ join_count_and_design <- function(sgcount, df_design) {
 #' 
 #' @param sgcount The input matrix contains read counts of sgRNAs for each sample.
 #' @param df_design The table contains a study design.
+#' @param add_dots The function will display dots of sgRNA counts if it is set to `TRUE`.
 #' @importFrom magrittr %>%
 #' @return A ggplot2 object contains a read count distribution plot for `sgcount`.
 #' 
@@ -154,13 +159,18 @@ join_count_and_design <- function(sgcount, df_design) {
 #' plot_count_distribution(cpm, Evers_CRISPRn_RT112$design)
 #' 
 #' @export
-plot_count_distribution <- function(sgcount, df_design) {
-    join_count_and_design(sgcount, df_design) %>% 
+plot_count_distribution <- function(sgcount, df_design, add_dots = FALSE) {
+    p <- join_count_and_design(sgcount, df_design) %>% 
         dplyr::mutate_(count = ~ log2(1+count)) %>% 
-        ggplot2::ggplot(ggplot2::aes_string(x="count")) + 
-        ggplot2::geom_density(ggplot2::aes_string(fill = "group")) + 
-        ggplot2::facet_wrap(~sample_name, ncol = 1) +
-        ggplot2::xlab("log2(1+count)")
+        ggplot2::ggplot(ggplot2::aes_string(y="count", x="sample_name")) + 
+        ggplot2::geom_violin(ggplot2::aes_string(fill = "group")) + 
+        ggplot2::ylab("log2(1+count)")
+    
+    if( add_dots == T ) {
+        p <- p + ggplot2::geom_jitter(width=0.1, alpha=0.5)   
+    }
+    
+    p
 }
 
 #' A function to visualize dot plots for a gene.

@@ -9,14 +9,16 @@ using namespace arma;
 //'
 //' @param ref_path the path of the annotation file and it has to be a FASTA formatted file.
 //' @param fastq_path a list of the FASTQ files.
+//' @param verbose Display some logs during the quantification if it is set to `true`.
 //'
 //' @importFrom Rcpp evalCpp
 //' @useDynLib CB2
 //' @export
 // [[Rcpp::export]]
 Rcpp::List quant(std::string ref_path, 
-                 std::vector<std::string> fastq_path) {
-  gRNA_Reference ref(ref_path.c_str());
+                 std::vector<std::string> fastq_path,
+                 bool verbose = false) {
+  gRNA_Reference ref(ref_path.c_str(), verbose);
   Rcpp::DataFrame df = Rcpp::DataFrame();
   std::vector<long long> sgRNA_hash;
   std::vector<std::string> sgRNA_name;
@@ -31,7 +33,7 @@ Rcpp::List quant(std::string ref_path,
   Rcpp::NumericVector total_read_count(M);
   int j = 0;
   for(auto &f : fastq_path) {
-    sgRNA_MAP smap(ref);
+    sgRNA_MAP smap(ref, verbose);
     smap.run_MAP(f.c_str());
     for(int i = 0; i < N ; ++i) {
       sgRNA_count(i,j) = smap.cnt[sgRNA_hash[i]];

@@ -3,10 +3,16 @@
 #' @param lib_path The path of the FASTA file.
 #' @param design A table contains the study design. It must contain `fastq_path` and `sample_name.`
 #' @param map_path The path of file contains gene-sgRNA mapping.
+#' @param ncores The number that indicates how many processors will be used with a parallelization. 
+#'   The parallelization will be enabled if users do not set the parameter as `-1`` 
+#'   (it means the full physical cores will be used) or greater than `1`.
+#' @param verbose Display some logs during the quantification if it is set to `TRUE`
 #' 
 #' @importFrom tools file_ext
 #' @importFrom readr read_csv read_tsv
 #' @importFrom dplyr left_join
+#' @importFrom parallel detectCores makeCluster clusterExport clusterApply stopCluster
+#' @importFrom R.utils gunzip
 #' @return It will return a list, and the list contains three elements. 
 #'   The first element (`count') is a data frame contains the result of the quantification for each sample. 
 #'   The second element (`total') is a numeric vector contains the total number of reads of each sample.
@@ -34,7 +40,9 @@
 #' @export
 run_sgrna_quant <- function(lib_path, 
                             design, 
-                            map_path = NULL) {
+                            map_path = NULL,
+                            ncores = 1, 
+                            verbose = FALSE) {
     # `design` has to be table `design` has to have four columns: sample_name, group, fastq_path
     if(!all(c("sample_name", "fastq_path") %in% colnames(design))) {
         stop("The design data frame should have both `sample_name` and `fastq_path` columns.")    
@@ -57,7 +65,43 @@ run_sgrna_quant <- function(lib_path,
     
     lib_path <- normalizePath(lib_path)
     design$fastq_path <- normalizePath(design$fastq_path)
-    quant_ret <- quant(lib_path, design$fastq_path)
+    
+    is_gzipped <- endsWith(tolower(design$fastq_path), ".gz")
+    
+    quant_ret <- NULL
+    fastq_path <- design$fastq_path
+    
+    for(i in 1:length(is_gzipped)) {
+        if(is_gzipped[i]) {
+            tmp_path <- tempfile(fileext = '.fastq')
+            R.utils::gunzip(fastq_path[i], tmp_path, remove=FALSE)
+            fastq_path[i] <- tmp_path
+        }
+    }
+    if(ncores == -1 || ncores >= 2) {
+        max_cores <- detectCores(logical = F)
+        if(ncores == -1) {
+            ncores <- max_cores
+        }
+        cl <- makeCluster( min(ncores, max_cores) )
+        
+        clusterExport(cl, "lib_path", envir = environment() )
+        clusterExport(cl, "fastq_path", envir = environment() )
+        clusterExport(cl, "is_gzipped", envir = environment() )
+        clusterExport(cl, "verbose", envir = environment() )
+        
+        tmp <- clusterApply(cl, x = 1:length(fastq_path), function(i) {
+            CB2::quant(lib_path, fastq_path[i], verbose)
+        })
+        
+        stopCluster(cl)
+        quant_ret$sgRNA <- tmp[[1]]$sgRNA
+        quant_ret$sequence <- tmp[[1]]$sequence
+        quant_ret$count <- sapply(tmp, function(x) x$count)
+        quant_ret$total <- sapply(tmp, function(x) x$total)
+    } else {
+        quant_ret <- quant(lib_path, fastq_path)
+    }
     
     if(is.null(map_path)) {
         df_count <- as.data.frame(quant_ret$count)

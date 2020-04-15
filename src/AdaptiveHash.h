@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cassert>
 #include <ctime>
-#include "gzstream.h"
 using namespace std;
 
 struct gRNA_Reference {
@@ -21,7 +20,7 @@ struct gRNA_Reference {
   unordered_map<long long, string> lib;
   vector<string> seq;
   
-  gRNA_Reference(const char *f_lib) {
+  gRNA_Reference(const char *f_lib, bool verbose = false) {
     ifstream inp(f_lib);
     
     string name, se;
@@ -40,7 +39,10 @@ struct gRNA_Reference {
       }
     } 
    
-    Rcpp::Rcerr << tot_dups << " sgRNA sequences were repetitive and will be discarded." << endl; 
+    if(verbose) {
+      Rcpp::Rcerr << tot_dups << " sgRNA sequences were repetitive and will be discarded." << endl;   
+    }   
+    
     lib_seq_len = 20;
     
     inp.close();
@@ -62,8 +64,11 @@ struct gRNA_Reference {
       seq.push_back(se);
     }
     inp.close();
-    Rcpp::Rcerr << "CB2 Detects the length of guided RNA is " << lib_seq_len << endl;
-    Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+    
+    if(verbose) {
+      Rcpp::Rcerr << "CB2 Detects the length of guided RNA is " << lib_seq_len << endl;
+      Rcpp::Rcerr << lib.size() << " gRNAs were found from the gRNA_Reference library." << endl;
+    }
   } 
   
 };
@@ -79,9 +84,77 @@ struct sgRNA_MAP {
   int num_hits_rc;
   long long tot_reads_len;
   bool is_rc;
+  long long mod;
   gRNA_Reference &ref;
-  void run_MAP(const char *f_seq, bool is_gzipped = false) {
-    Rcpp::Rcerr << "Reading " << f_seq << endl;
+  
+  bool verbose;
+  
+  void search(string &line) {
+    const static int rc[] = {2, 3, 0, 1};
+    
+    int cur_len = 0;
+    long long num = 0;
+    int i = 0;
+    bool is_found = false;
+    for(auto &c: line) {
+      i++; 
+      c = toupper(c);
+      if(c=='N') {
+        cur_len = 0;
+        num = 0;
+        continue;
+      }
+      num *= 4;
+      num += (c>>1)&3;
+      num %= mod;
+      if(++cur_len==ref.lib_seq_len) {
+        if(ref.lib.count(num)>0) {
+          pos[i-ref.lib_seq_len]++; 
+          ++num_hits;
+          cnt[num]++;
+          is_found = true;  
+          break;
+        }
+        --cur_len;
+      }
+    }
+    if(is_found) {
+      return;
+    }
+    
+    cur_len = 0;
+    num = 0;
+    reverse(line.begin(), line.end());
+    i = 0;
+    for(auto &c: line) {
+      c = toupper(c);
+      if(c=='N') {
+        cur_len = 0;
+        num = 0;
+        continue;
+      }
+      num *= 4;
+      num += rc[(int(c)>>1)&3];
+      num %= mod;
+      if(++cur_len==ref.lib_seq_len) {
+        if(ref.lib.count(num)>0) {
+          pos_rc[i]++;
+          ++num_hits_rc;
+          cnt_rc[num]++;
+          break;
+        }
+        --cur_len;
+      }
+      i++;
+    }
+    reverse(line.begin(), line.end());
+  }
+  
+  void run_MAP(const char *f_seq) {
+    
+    if(verbose) {
+      Rcpp::Rcerr << "Reading " << f_seq << endl;
+    }
     string line;
     int num_line = 0;
     is_rc = false;
@@ -89,8 +162,7 @@ struct sgRNA_MAP {
     num_hits = 0;
     num_hits_rc = 0;
     tot_reads_len = 0;
-    long long mod = 1LL<<(2*ref.lib_seq_len);
-    const int rc[] = {2, 3, 0, 1};
+    mod = 1LL<<(2*ref.lib_seq_len);
     string msg;	
 
     ifstream inp(f_seq);
@@ -99,75 +171,27 @@ struct sgRNA_MAP {
       if(num_line++%4!=1) continue;
       
       tot_reads_len += line.size();
-      if(++num_proc_line%int(1e6)==0) {
+      if(++num_proc_line%int(1e6)==0 && verbose) {
         Rcpp::Rcerr << "Processing " << num_proc_line << "th line..." << endl;
         Rcpp::Rcerr << "Current Mappability: " << 100.0*max(num_hits,num_hits_rc)/(num_proc_line-1) << "%" << endl;
       }
-      int cur_len = 0;
-      long long num = 0;
-      int i = 0;
-      bool is_found = false;
-      for(auto &c: line) {
-        i++; 
-        c = toupper(c);
-        if(c=='N') {
-          cur_len = 0;
-          num = 0;
-          continue;
-        }
-        num *= 4;
-        num += (c>>1)&3;
-        num %= mod;
-        if(++cur_len==ref.lib_seq_len) {
-          if(ref.lib.count(num)>0) {
-            pos[i-ref.lib_seq_len]++; 
-            ++num_hits;
-            cnt[num]++;
-            is_found = true;  
-            break;
-          }
-          --cur_len;
-        }
-      }
-      is_found = false;
-      cur_len = 0;
-      num = 0;
-      reverse(line.begin(), line.end());
-      i = 0;
-      for(auto &c: line) {
-        c = toupper(c);
-        if(c=='N') {
-          cur_len = 0;
-          num = 0;
-          continue;
-        }
-        num *= 4;
-        num += rc[(int(c)>>1)&3];
-        num %= mod;
-        if(++cur_len==ref.lib_seq_len) {
-          if(ref.lib.count(num)>0) {
-            pos_rc[i]++;
-            ++num_hits_rc;
-            cnt_rc[num]++;
-            is_found = true;
-            break;
-          }
-          --cur_len;
-        }
-        i++;
-      }
-      reverse(line.begin(), line.end());
+      
+      search(line);
     }
-    Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
-    Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+    
+    if(verbose) {
+      Rcpp::Rcerr << "Total " << num_proc_line << " were proceed!" << endl;
+      Rcpp::Rcerr << "Final Mappability: " << 100.0*max(num_hits,num_hits_rc)/num_proc_line << "%" << endl;
+    }
     
     inp.close();
     
     if(num_hits < num_hits_rc) {
       is_rc = true;
-    }
+    }      
   }
-  sgRNA_MAP(gRNA_Reference &r) : ref(r) {}
+
+  sgRNA_MAP(gRNA_Reference &r, bool v) : ref(r), verbose(v) {}
 };
 
 #endif

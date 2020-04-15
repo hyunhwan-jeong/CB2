@@ -1,0 +1,63 @@
+---
+title: "Handling the input matrix in CB2"
+author: "Hyun-Hwan Jeong"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: references.bib
+vignette: >
+  %\VignetteIndexEntry{Handling the input matrix in CB2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+If an analysis starts with an input matrix, it has to be appropriately pre-proceed before it is used any functions of `CB2`. `CB2` allows two different types of input: a numeric matrix/data frame with `row.names` and a data.frame contains columns of counts and columns of sgRNA IDs and target genes. Either of them will work. This document explains how the input should be formed and how to process the input using `CB2`. In the entire document, [@evers2016crispr]'s CRISPR-RT112 screen data are used.  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following code imports required packages which are required to run below codes.
+
+```{r}
+library(CB2)
+library(dplyr)
+library(readr)
+```
+
+The following code block shows an example of the first type of input which `CB2` can handle. Each column of `Evers_CRISPRn_RT112$count` contains counts of guide RNAs of a sample (that was initially extracted from NGS data). A count of the input shows that how many guide RNA barcodes were observed from a given NGS sample. Each row of the matrix has a row name (e.g., `RPS19_sg10`), and the name is the ID of a guide RNA. For example, `RPS19_sg10`, which is the first-row name in the example, indicates that the first row contains the counts of `RPS_sg10` guide RNA. Every guide RNA ID **must have exactly one `_` character**, and it is used to be a separator of two strings. The first string displays the name of a gene whose gene is targeted by the guide RNA, and the second string is used as an identifier among guide RNAs that targets the same gene. For example, `RPS_sg10` indicates that the guide RNA is designed to target the `RPS` gene, and `sg10` is the unique identifier. 
+
+**NOTE :** If the input contains multiple `_` characters, `CB2` is not able to run. In particular, if Entrez gene IDs are used as the gene names, `CB2`  does not handle the input. One of the solutions for this case is changing the gene names to another identifier (e.g., HGNC symbol) or using another type of input, which will explain below.
+
+```{r}
+data("Evers_CRISPRn_RT112")
+head(Evers_CRISPRn_RT112$count)
+```
+
+In addition, `CB2` requires experiement design information which is formed as a data.frame and contains sample names and groups of each sample. In `Evers_CRISPRn_RT112` data, `Evers_CRISPRn_RT112$design` is the data.frame.
+
+```{r}
+Evers_CRISPRn_RT112$design
+```
+
+With the two variables, `CB2` can perform the hypothesis test with `measure_sgrna_stats` and `measure_gene_stats` functions.
+
+```{r}
+sgrna_stats <- measure_sgrna_stats(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
+gene_stats <- measure_gene_stats(sgrna_stats)
+head(gene_stats)
+```
+
+Another input type is a data.frame that contains two additional columns, which contain the guide RNA information (target gene and guide RNA identifier). A CSV file which was used in the `CB2` publication ([@jeong2019beta]). The CSV file contains the additional columns, the first is the `gene` column, and the second is the `sgRNA` column.
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/data/Evers/CRISPRn-RT112.csv")
+df
+```
+
+Two additional parameters have to be set to the `measure_sgrna_stats` function if an input matrix is this type. The first parameter is `ge_id`, which specifies the column of genes, and the second parameter is `sg_id`, which specifies the column of IDs. In the following code, `gene_id` sets as `gene` and `sg_id` sets as `sgRNA`.
+
+```{r}
+head(measure_sgrna_stats(df, Evers_CRISPRn_RT112$design, "before", "after", ge_id = 'gene', sg_id = 'sgRNA'))
+```
+
+### References

@@ -106,7 +106,7 @@ get_CPM(cb2_count$count)
 There are four functions we can use to check the quality of the input data.  The first function (`plot_count_distribution`) will give the mappability (the success rate of sgRNA identification from reads) for each sample.
 
 ```{r}
-plot_count_distribution(cb2_count$count %>% get_CPM, df_design)
+plot_count_distribution(cb2_count$count %>% get_CPM, df_design, add_dots = T)
 ```
 
 We can also check the mappability (The proportion of the number of reads successfully aligned to a sgRNA in the library among the entire reads) using `calc_mappability` function.

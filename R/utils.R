@@ -115,6 +115,13 @@ calc_mappability <- function(count_obj, df_design) {
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble
 #' @return A tall-thin and combined table of the sgRNA read counts and study design will be returned.
+#'
+#' @examples 
+#' library(CB2)
+#' data(Evers_CRISPRn_RT112) 
+#' head(join_count_and_design(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design))
+#' 
+#' @export
 join_count_and_design <- function(sgcount, df_design) {
     cols <- colnames(sgcount)
     

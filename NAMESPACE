@@ -3,6 +3,7 @@
 export(calc_mappability)
 export(fit_ab)
 export(get_CPM)
+export(join_count_and_design)
 export(measure_gene_stats)
 export(measure_sgrna_stats)
 export(plot_PCA)

@@ -17,3 +17,9 @@ A tall-thin and combined table of the sgRNA read counts and study design will be
 \description{
 A function to join a count table and a design table.
 }
+\examples{
+library(CB2)
+data(Evers_CRISPRn_RT112) 
+head(join_count_and_design(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design))
+
+}

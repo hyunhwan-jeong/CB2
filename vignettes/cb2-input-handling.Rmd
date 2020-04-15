@@ -33,7 +33,7 @@ data("Evers_CRISPRn_RT112")
 head(Evers_CRISPRn_RT112$count)
 ```
 
-In addition, `CB2` requires experiement design information which is formed as a data.frame and contains sample names and groups of each sample. In `Evers_CRISPRn_RT112` data, `Evers_CRISPRn_RT112$design` is the data.frame.
+In addition, `CB2` requires experiment design information which is formed as a data.frame and contains sample names and groups of each sample. In `Evers_CRISPRn_RT112` data, `Evers_CRISPRn_RT112$design` is the data.frame.
 
 ```{r}
 Evers_CRISPRn_RT112$design

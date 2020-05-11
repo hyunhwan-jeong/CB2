@@ -4,7 +4,8 @@
 \name{Evers_CRISPRn_RT112}
 \alias{Evers_CRISPRn_RT112}
 \title{A benchmark CRISPRn pooled screen data from Evers et al.}
-\format{The data object is a list and contains below information:
+\format{
+The data object is a list and contains below information:
 \describe{
   \item{count}{The count matrix from Evers et al.'s paper and contains the CRISPRn screening result using RT112 cell-line.
     It contains three different replicates for T0 (before) and contains different three replicates for T1 (after).}
@@ -13,7 +14,8 @@
   \item{design}{The data.frame contains study design.}
   \item{sg_stat}{The data.frame contains the sgRNA-level statistics.}
   \item{gene_stat}{The data.frame contains the gene-level statistics.}
-}}
+}
+}
 \source{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
 }

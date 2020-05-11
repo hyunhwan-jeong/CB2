@@ -4,14 +4,16 @@
 \name{Sanson_CRISPRn_A375}
 \alias{Sanson_CRISPRn_A375}
 \title{A benchmark CRISPRn pooled screen data from Sanson et al.}
-\format{The data object is a list and contains below information:
+\format{
+The data object is a list and contains below information:
 \describe{
   \item{count}{The count matrix from Sanson et al.'s paper and contains the CRISPRn screening result using A375 cell-line. 
     It contains a sample of plasimd, and three biological replicates after three weeks.}
   \item{egenes}{The list of 1,580 essential genes used in Sanson et al.'s study.}
   \item{ngenes}{The list of 927 non-essential genes used in Sanson et al.'s study.}
   \item{design}{The data.frame contains study design.}
-}}
+}
+}
 \source{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/30575746}
 }

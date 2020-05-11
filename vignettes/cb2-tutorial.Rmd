@@ -149,7 +149,7 @@ Here is the information of each column in the data.frame of the sgRNA-level stat
 * `vhat_b`: The variance of the sgRNA for the second group.
 * `cpm_a`: The mean CPM of the sgRNA within the first group.
 * `cpm_b`: The mean CPM of the sgRNA within the second group.
-* `logFC`: The log fold change of sgRNA between two groups, and calculated by $log_{2}\frac{CPM_{a}+1}{CPM_{b}+1}$
+* `logFC`: The log fold change of sgRNA between two groups, and calculated by $log_{2}\frac{CPM_{b}+1}{CPM_{a}+1}$
 * `t_value`: The value for the t-statistics.
 * `df`: The value of the degree of freedom, and will be used to calculate the p-value of the sgRNA.
 * `p_ts`: The p-value indicates a difference between the two groups.
@@ -172,7 +172,7 @@ Here is the information of each column in the data.frame of the gene-level stati
 * `n_sgrna`: The number of sgRNA targets the gene in the library.
 * `cpm_a`: The mean of CPM of sgRNAs within the first group.
 * `cpm_b`: The mean of CPM of sgRNAs within the second group.
-* `logFC`: The log fold change of the gene between two groups, and calculated by $log_{2}\frac{CPM_{a}+1}{CPM_{b}+1}$
+* `logFC`: The log fold change of the gene between two groups, and calculated by $log_{2}\frac{CPM_{b}+1}{CPM_{a}+1}$
 * `p_ts`: The p-value indicates a difference between the two groups at the gene-level.
 * `p_pa`: The p-value indicates enrichment of the first group at the gene-level.
 * `p_pb`: The p-value indicates enrichment of the second group at the gene-level.

@@ -4,10 +4,12 @@
 \alias{measure_gene_stats}
 \title{A function to perform gene-level test using a sgRNA-level statistics.}
 \usage{
-measure_gene_stats(sgrna_stat)
+measure_gene_stats(sgrna_stat, logFC_level = "sgRNA")
 }
 \arguments{
 \item{sgrna_stat}{A data frame created by `measure_sgrna_stats'}
+
+\item{logFC_level}{The level of `logFC' value. It can be `gene' or `sgRNA'.}
 }
 \value{
 A table contains the gene-level test result, and the table contains these columns: 
@@ -16,7 +18,7 @@ A table contains the gene-level test result, and the table contains these column
   \item `n_sgrna': The number of sgRNA targets the gene in the library.
   \item `cpm_a': The mean of CPM of sgRNAs within the first group.
   \item `cpm_b': The mean of CPM of sgRNAs within the second group.
-  \item `logFC': The log fold change of the gene between two groups.
+  \item `logFC': The log fold change of the gene between two groups. Taking the mean of sgRNA `logFC's is default, and `logFC` is calculated by `log2(cpm_b+1) - log2(cpm_a+1)' if `logFC_level' parameter is set to `gene'.
   \item `p_ts': The p-value indicates a difference between the two groups at the gene-level.
   \item `p_pa': The p-value indicates enrichment of the first group at the gene-level.
   \item `p_pb': The p-value indicates enrichment of the second group at the gene-level.

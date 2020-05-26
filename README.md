@@ -9,6 +9,14 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ## Update
 
+### May 26, 2020
+
+* Regarding [#9](https://github.com/LiuzLab/CB2/issues/9), CB<sup>2</sup> now provides logFC of gene-level analysis with two different modes. The default option is the same as the previous version, and setting `logFC` parameter value of `measure_gene_stats` to `gene` will provide the `logFC` calculate by gene-level CPMs.
+
+### April 14, 2020
+
+* Regarding [#6](https://github.com/LiuzLab/CB2/issues/6), now users can use `join_count_and_design` function. 
+
 ### December 16, 2019
 
 * Regarding [#4](https://github.com/LiuzLab/CB2/issues/4), CB<sup>2</sup> now supports gzipped FASTQ file.

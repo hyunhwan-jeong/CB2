@@ -4,6 +4,8 @@ library(CB2)
 library(dplyr)
 library(tidyr)
 library(tibble)
+library(dplyr)
+library(magrittr)
 FASTA <- system.file("extdata",
                      "toydata", "small_sample_dup.fasta",
                      package = "CB2")
@@ -118,6 +120,30 @@ test_that("Testing error handling of the measure_sgrna_stats.", {
                                    "before", "after", ge_id = c("A", "B"),
                                    sg_id = c("A", "B")),  
                "ge_id should be a character variables")
+})
+
+
+test_that("Testing logFC calculation of the measure_sgrna_stats.", {
+  data(Evers_CRISPRn_RT112)
+  sg <- measure_sgrna_stats(Evers_CRISPRn_RT112$count, Evers_CRISPRn_RT112$design, "before", "after")
   
+  expect_error(measure_gene_stats(sg, logFC_level = "sg"),
+               "logFC_level` has to be 'gene' or 'sgRNA'.")
   
+  ge <- measure_gene_stats(sg, logFC_level = "sgRNA")
+  
+  sg_logFC <- ge %>% group_by(gene) %>% 
+    summarise(logFC = mean(logFC)) %>% 
+    ungroup() %>% pull(logFC)
+  expect_equal(ge$logFC, sg_logFC, tolerance = 1e-8)
+  
+  ge_logFC <- ge %>% group_by(gene) %>% 
+    summarise(cpm_a = mean(cpm_a), cpm_b = mean(cpm_b)) %>% 
+    ungroup() %>% 
+    mutate(logFC = log2(cpm_b+1) - log2(cpm_a+1)) %>% 
+    pull(logFC)
+
+  ge <- measure_gene_stats(sg, logFC_level = "gene")
+  
+  expect_equal(ge$logFC, ge_logFC, tolerance = 1e-8)
 })

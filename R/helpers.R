@@ -339,6 +339,7 @@ measure_sgrna_stats <- function(sgcount, design,
 #' A function to perform gene-level test using a sgRNA-level statistics.
 #' 
 #' @param sgrna_stat A data frame created by `measure_sgrna_stats'
+#' @param logFC_level The level of `logFC' value. It can be `gene' or `sgRNA'.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble
@@ -351,7 +352,7 @@ measure_sgrna_stats <- function(sgcount, design,
 #'   \item `n_sgrna': The number of sgRNA targets the gene in the library.
 #'   \item `cpm_a': The mean of CPM of sgRNAs within the first group.
 #'   \item `cpm_b': The mean of CPM of sgRNAs within the second group.
-#'   \item `logFC': The log fold change of the gene between two groups.
+#'   \item `logFC': The log fold change of the gene between two groups. Taking the mean of sgRNA `logFC's is default, and `logFC` is calculated by `log2(cpm_b+1) - log2(cpm_a+1)' if `logFC_level' parameter is set to `gene'.
 #'   \item `p_ts': The p-value indicates a difference between the two groups at the gene-level.
 #'   \item `p_pa': The p-value indicates enrichment of the first group at the gene-level.
 #'   \item `p_pb': The p-value indicates enrichment of the second group at the gene-level.
@@ -365,11 +366,17 @@ measure_sgrna_stats <- function(sgcount, design,
 #' measure_gene_stats(Evers_CRISPRn_RT112$sg_stat)
 #' 
 #' @export
-measure_gene_stats <- function(sgrna_stat) {
+measure_gene_stats <- function(sgrna_stat, logFC_level = 'sgRNA') {
     if(!all(c("gene", "cpm_a", "cpm_b", "logFC", "p_ts", "p_pa", "p_pb") %in% colnames(sgrna_stat))) {
         stop("It looks like `sgrna_stat` does not contain any result of a statistical test.")
     }
-    sgrna_stat %>% dplyr::group_by_(~gene) %>%
+    
+    
+    if(!(logFC_level %in% c("gene", "sgRNA"))) {
+        stop("`logFC_level` has to be 'gene' or 'sgRNA'.")
+    }
+    
+    ret <- sgrna_stat %>% dplyr::group_by_(~gene) %>%
         dplyr::summarise_(
             n_sgrna = ~dplyr::n(),
             cpm_a = ~mean(cpm_a),
@@ -384,5 +391,11 @@ measure_gene_stats <- function(sgrna_stat) {
             fdr_pa = ~p.adjust(p_pa, method = "fdr"),
             fdr_pb = ~p.adjust(p_pb, method = "fdr")
         )
+    
+    if(logFC_level != 'sgRNA') {
+        ret %>% 
+            dplyr::mutate_(logFC = ~(log2(cpm_b+1) - log2(cpm_a+1)))
+    } else {
+        ret
+    }
 }
-

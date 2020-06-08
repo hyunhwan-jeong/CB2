@@ -2,7 +2,7 @@
 [![](https://img.shields.io/cran/l/CB2.svg)](https://cran.r-project.org/package=CB2/LICENSE)
 
 
-## What is CB<sup>2</sup>
+## CB<sup>2</sup> <img src="man/figures/hexsticker.png" align="right" height="140"/>
 
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 
 We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are also implemented in [CRISPRCloud](http://crispr.nrihub.org/).

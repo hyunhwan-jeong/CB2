@@ -72,19 +72,19 @@ test_that("Test parallelized quantification.", {
     testthat::expect_length(run_sgrna_quant(FASTA, df_design, ncores = 2), 3)
 })
 
-# test_that("The result has to be consistent to the publication", {
-#   data("Sanson_CRISPRn_A375")
-#   published <- read.csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/results/Sanson/CRISPRn-A375/FDR/CB2.csv")
-#   sgrna <- measure_sgrna_stats(Sanson_CRISPRn_A375$count, Sanson_CRISPRn_A375$design, "ctl", "trt")
-#   gene <- measure_gene_stats(sgrna)
-# 
-#   test <- dplyr::left_join(
-#     published,
-#     gene %>% select(gene, fdr_test = fdr_pa)
-#   )
-# 
-#   testthat::expect(sum(abs(test$fdr-test$fdr_test)) < 1e-10)
-# })
+#test_that("The result has to be consistent to the publication", {
+#  data("Sanson_CRISPRn_A375")
+#  published <- read.csv("https://raw.githubusercontent.com/hyunhwaj/CB2-Experiments/master/01_gene-level-analysis/results/Sanson/CRISPRn-A375/FDR/CB2.csv")
+#  sgrna <- measure_sgrna_stats(Sanson_CRISPRn_A375$count, Sanson_CRISPRn_A375$design, "ctl", "trt")
+#  gene <- measure_gene_stats(sgrna)
+#
+#  test <- dplyr::left_join(
+#    published,
+#    gene %>% select(gene, fdr_test = fdr_pa)
+#  )
+#
+#  testthat::expect_true(sum(abs(test$fdr-test$fdr_test)) < 1e-10, "failed to reproduce the publication result.")
+#})
 
 test_that("It should allow a table with two columns contains sgRNA information", {
   data(Evers_CRISPRn_RT112)

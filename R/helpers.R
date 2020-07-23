@@ -71,7 +71,7 @@ run_sgrna_quant <- function(lib_path,
     quant_ret <- NULL
     fastq_path <- design$fastq_path
     
-    for(i in 1:length(is_gzipped)) {
+    for(i in seq_along(is_gzipped)) {
         if(is_gzipped[i]) {
             tmp_path <- tempfile(fileext = '.fastq')
             R.utils::gunzip(fastq_path[i], tmp_path, remove=FALSE)
@@ -90,7 +90,7 @@ run_sgrna_quant <- function(lib_path,
         clusterExport(cl, "is_gzipped", envir = environment() )
         clusterExport(cl, "verbose", envir = environment() )
         
-        tmp <- clusterApply(cl, x = 1:length(fastq_path), function(i) {
+        tmp <- clusterApply(cl, x = seq_along(fastq_path), function(i) {
             CB2::quant(lib_path, fastq_path[i], verbose)
         })
         
@@ -343,7 +343,7 @@ measure_sgrna_stats <- function(sgcount, design,
 #'
 #' @importFrom magrittr %>%
 #' @importFrom tibble tibble
-#' @importFrom dplyr group_by
+#' @import dplyr
 #' @importFrom stats p.adjust
 #'
 #' @return A table contains the gene-level test result, and the table contains these columns: 
@@ -376,25 +376,27 @@ measure_gene_stats <- function(sgrna_stat, logFC_level = 'sgRNA') {
         stop("`logFC_level` has to be 'gene' or 'sgRNA'.")
     }
     
-    ret <- sgrna_stat %>% dplyr::group_by_(~gene) %>%
-        dplyr::summarise_(
-            n_sgrna = ~dplyr::n(),
-            cpm_a = ~mean(cpm_a),
-            cpm_b = ~mean(cpm_b),
-            logFC = ~mean(logFC),
-            p_ts = ~ifelse(dplyr::n() > 1, metap::sumlog(p_ts)$p, sum(p_ts)),
-            p_pa = ~ifelse(dplyr::n() > 1, metap::sumlog(p_pa)$p, sum(p_pa)),
-            p_pb = ~ifelse(dplyr::n() > 1, metap::sumlog(p_pb)$p, sum(p_pb))
-        ) %>%
-        dplyr::ungroup() %>% dplyr::mutate_(
-            fdr_ts = ~p.adjust(p_ts, method = "fdr"),
-            fdr_pa = ~p.adjust(p_pa, method = "fdr"),
-            fdr_pb = ~p.adjust(p_pb, method = "fdr")
-        )
-    
+    ret <- sgrna_stat %>%
+      group_by(.data$gene) %>%
+      summarize(
+          n_sgrna = n(),
+          cpm_a = mean(.data$cpm_a),
+          cpm_b = mean(.data$cpm_b),
+          logFC = mean(.data$logFC),
+          p_ts = ifelse(n() > 1, metap::sumlog(.data$p_ts)$p, sum(.data$p_ts)),
+          p_pa = ifelse(n() > 1, metap::sumlog(.data$p_pa)$p, sum(.data$p_pa)),
+          p_pb = ifelse(n() > 1, metap::sumlog(.data$p_pb)$p, sum(.data$p_pb))
+      ) %>%
+      ungroup() %>%
+      mutate(
+          fdr_ts = p.adjust(.data$p_ts, method = "fdr"),
+          fdr_pa = p.adjust(.data$p_pa, method = "fdr"),
+          fdr_pb = p.adjust(.data$p_pb, method = "fdr")
+      )
+
     if(logFC_level != 'sgRNA') {
         ret %>% 
-            dplyr::mutate_(logFC = ~(log2(cpm_b+1) - log2(cpm_a+1)))
+            mutate(logFC = (log2(.data$cpm_b+1) - log2(.data$cpm_a+1)))
     } else {
         ret
     }

@@ -110,18 +110,43 @@ out_path <- "~/Downloads/broadgpp-dolcetto-targets-seta.fa"
 #' @import dplyr
 #' @import readr
 #' @importFrom magrittr %>%
+#' @importFrom stringr str_c
 #' @export
 #'
 #' @examples
+#' library(CB2)
+#' 
+#' fa_path <- system.file(
+#'  "extdata",
+#'  "toydata",
+#'  "small_sample.fasta",
+#'  package = "CB2"
+#' ) 
+#' csv_path <- system.file(
+#'   "extdata",
+#'   "toydata",
+#'   "small_sample.csv",
+#'   package = "CB2"
+#' )
+#' 
+#' tmp_fasta_path <- tempfile(fileext = ".fa")
+#' table2fa(
+#'   input_path = csv_path,
+#'   output_path = tmp_fasta_path,
+#'   id_col = 1,
+#'   seq_col = 2,
+#'   id_type = "sgRNA"
+#' )
+#' cat(readLines(tmp_fasta_path)[1:5], sep="\n") # To see the head of the file.
 table2fa <- function(input_path, 
                      output_path,
                      seq_col = 1,
                      id_col = 2,
                      id_type = "gene") {
-  if(endsWith(tolower(file_path), ".csv")) {
-    df_lib <- read_csv(file_path)
+  if(endsWith(tolower(input_path), ".csv")) {
+    df_lib <- read_csv(input_path)
   } else {
-    df_lib <- read_tsv(file_path)
+    df_lib <- read_tsv(input_path)
   }
   
   if(typeof(seq_col) != typeof(id_col)) {
@@ -131,7 +156,7 @@ table2fa <- function(input_path,
   message(typeof(seq_col), " type is given for column indexing.")
   
   if(typeof(seq_col) == "character") {
-    vars <- c(gele_col, seq_col)
+    vars <- c(id_col, seq_col)
     if(!all(vars %in% colnames(df_lib))) {
       stop("Either `seq_col` or `id_col` is not existed.")
     }
@@ -163,7 +188,55 @@ table2fa <- function(input_path,
                           .data$seq))
   }
   
-  cat(file=out_path, df_sel$line, sep="\n")
+  cat(file=output_path, df_sel$line, sep="\n")
   message("A FASTA file has been created at ", out_path)
   NULL
+}
+
+#' Convert a FASTA file to a data.frame
+#'
+#' @param fasta_path a path to the fasta file.
+#'
+#' @return It returns a data.frame that contains information of guide RNA library. 
+#' @export
+#'
+#' @examples
+#' library(CB2)
+#' 
+#' fa_path <- system.file(
+#'  "extdata",
+#'  "toydata",
+#'  "small_sample.fasta",
+#'  package = "CB2"
+#' ) 
+#' cat(readLines(fa_path)[1:5], sep="\n") # To see the head of the file.
+#' 
+#' fasta2df(fa_path)
+fasta2df <- function(fasta_path) {
+  ids <- readLines(fasta_path)[c(TRUE, FALSE)]
+  seqs <- readLines(fasta_path)[c(FALSE, TRUE)]
+  
+  message("Performing sanity checks.")
+  
+  valid_ids <- startsWith(ids, ">")
+  if(!all(valid_ids)) {
+    stop("Something is not correct with the guide IDs. Please check the line ",
+         which(!valid_ids)[1] * 2 -1)
+    
+  }
+  
+  valid_seqs <- sapply(seqs, function(x) nchar(x) == nchar(seqs[1]))
+  
+  if(!all(valid_seqs)) {
+    stop("Something is not correct with the guide RNAs. Please check the line ",
+         which(!valid_seqs)[1] * 2)
+  }
+  
+  ids <- stringr::str_remove(ids, ">")  
+  
+  message("Generating a data.frame")
+  data.frame(
+    id = ids,
+    sgRNA = seqs
+  ) 
 }

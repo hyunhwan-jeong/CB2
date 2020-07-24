@@ -3,3 +3,4 @@
 ^\.idea$
 ^\.Rhistory$
 ^\.RData$
+^data-raw$

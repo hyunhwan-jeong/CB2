@@ -4,7 +4,7 @@
 \alias{table2fa}
 \title{Convert a CSV/TSV format file to a FASTA file.}
 \usage{
-table2fa(input_path, output_path, seq_col = 1, gene_col = 2)
+table2fa(input_path, output_path, seq_col = 1, id_col = 2, id_type = "gene")
 }
 \arguments{
 \item{input_path}{A path to a CSV/TSV (comma/tab-separated values) format file.}
@@ -13,12 +13,39 @@ table2fa(input_path, output_path, seq_col = 1, gene_col = 2)
 
 \item{seq_col}{A column index or column name whose column contains guide RNA sequences.}
 
-\item{gene_col}{A column index or column name whose column contains gene names. 
-The type of both `seq_col` and `gene_col` have to be the same.}
+\item{id_col}{A column index or column name whose column contains gene/guide name.}
+
+\item{id_type}{Type of `id_col`, it can be specified either `gene` or `sgRNA`.}
 }
 \value{
-
+It does not return anything. Only create a FASTA file at `output_path`.
 }
 \description{
 Convert a CSV/TSV format file to a FASTA file.
+}
+\examples{
+library(CB2)
+
+fa_path <- system.file(
+ "extdata",
+ "toydata",
+ "small_sample.fasta",
+ package = "CB2"
+) 
+csv_path <- system.file(
+  "extdata",
+  "toydata",
+  "small_sample.csv",
+  package = "CB2"
+)
+
+tmp_fasta_path <- tempfile(fileext = ".fa")
+table2fa(
+  input_path = csv_path,
+  output_path = tmp_fasta_path,
+  id_col = 1,
+  seq_col = 2,
+  id_type = "sgRNA"
+)
+cat(readLines(tmp_fasta_path)[1:5], sep="\n") # To see the head of the file.
 }

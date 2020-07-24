@@ -147,3 +147,39 @@ test_that("Testing logFC calculation of the measure_sgrna_stats.", {
   
   expect_equal(ge$logFC, ge_logFC, tolerance = 1e-8)
 })
+
+test_that("Testing table2fa and fasta2df function.", {
+  fa_path <- system.file(
+    "extdata",
+    "toydata",
+    "small_sample.fasta",
+    package = "CB2"
+  )
+  csv_path <- system.file(
+    "extdata",
+    "toydata",
+    "small_sample.csv",
+    package = "CB2"
+  )
+  
+  gen_fasta_path <- tempfile(fileext = ".fa")
+  table2fa(
+    input_path = csv_path,
+    output_path = gen_fasta_path,
+    id_col = 1,
+    seq_col = 2,
+    id_type = "sgRNA"
+  )
+  
+  expect_equal(readLines(fa_path), readLines(gen_fasta_path))
+  
+  table2fa(
+    input_path = csv_path,
+    output_path = gen_fasta_path,
+    id_col = 2,
+    seq_col = 1
+  )
+  
+  df_lib <- fasta2df(fa_path)
+  expect_true(all.equal(df_lib, read.csv(csv_path)))
+ })

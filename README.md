@@ -9,6 +9,15 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ## Update
 
+### Dec 4, 2020
+
+If you are experiencing an issue during the installation, it would be possible due to `multtest` package hasn't been installed. If so, please use the following snippet to install the package. 
+
+```r
+install.package("BiocManager") # can be omitted if you have installed the package
+install.packages("multtest")
+```
+
 ### May 26, 2020
 
 * Regarding [#9](https://github.com/LiuzLab/CB2/issues/9), CB<sup>2</sup> now provides logFC of gene-level analysis with two different modes. The default option is the same as the previous version, and setting `logFC` parameter value of `measure_gene_stats` to `gene` will provide the `logFC` calculate by gene-level CPMs.

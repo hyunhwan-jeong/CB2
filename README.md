@@ -9,6 +9,10 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ## Update
 
+## Jun 7, 2022
+
+A bug fix regarding [#14](https://github.com/LiuzLab/CB2/issues/14)
+
 ### Dec 4, 2020
 
 If you are experiencing an issue during the installation, it would be possible due to `multtest` package hasn't been installed. If so, please use the following snippet to install the package. 

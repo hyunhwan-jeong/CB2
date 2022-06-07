@@ -18,6 +18,7 @@ using namespace std;
 struct gRNA_Reference {
   int lib_seq_len;
   unordered_map<long long, string> lib;
+  unordered_map<string, string> id2seq;
   vector<string> seq;
   
   gRNA_Reference(const char *f_lib, bool verbose = false) {
@@ -61,6 +62,7 @@ struct gRNA_Reference {
       
       lib_seq_len = se.size();
       lib[num] = name;
+      id2seq[name] = se;
       seq.push_back(se);
     }
     inp.close();

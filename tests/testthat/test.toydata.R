@@ -95,6 +95,16 @@ test_that("It should allow a table with two columns contains sgRNA information",
   )
 })
 
+test_that("Testing that the run_sgrna_quant output contains valid order for sgRNA sequences (re issue #14)", {
+  MAP_FILE <- system.file("extdata", "toydata", "sg2gene.csv", package="CB2")
+  sgrna_count <- run_sgrna_quant(FASTA, df_design, MAP_FILE)
+  
+  df_exp <- read.table(system.file("extdata", "toydata", "sg2seq.tsv", package="CB2"), header=T)
+  df_oup <- sgrna_count$sequence
+  testthat::expect_true(
+    all(df_oup[order(df_oup$sgRNA),] == df_exp[order(df_exp$sgRNA),])
+  )
+})
 
 test_that("Testing error handling of the measure_sgrna_stats.", {
   data(Evers_CRISPRn_RT112)

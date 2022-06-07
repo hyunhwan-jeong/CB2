@@ -5,13 +5,13 @@
 ## CB<sup>2</sup> <img src="man/figures/hexsticker.png" align="right" height="140"/>
 
 CB<sup>2</sup>(CRISPRBetaBinomial) is a new algorithm for analyzing CRISPR data based on beta-binomial distribution. 
-We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are also implemented in [CRISPRCloud](http://crispr.nrihub.org/).
+We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2</sup> are also implemented in [CRISPRCloud](https://crispr.nrihub.org/).
 
 ## Update
 
 ### Jun 7, 2022
 
-A bug fix regarding [#14](https://github.com/LiuzLab/CB2/issues/14). Thanks @DaneseAnna for reporting the issue.
+A bug fix regarding [#14](https://github.com/hyunhwan-jeong/CB2/issues/14). Thanks @DaneseAnna for reporting the issue.
 
 ### Dec 4, 2020
 
@@ -24,16 +24,16 @@ install.packages("multtest")
 
 ### May 26, 2020
 
-* Regarding [#9](https://github.com/LiuzLab/CB2/issues/9), CB<sup>2</sup> now provides logFC of gene-level analysis with two different modes. The default option is the same as the previous version, and setting `logFC` parameter value of `measure_gene_stats` to `gene` will provide the `logFC` calculate by gene-level CPMs.
+* Regarding [#9](https://github.com/hyunhwan-jeong/CB2/issues/9), CB<sup>2</sup> now provides logFC of gene-level analysis with two different modes. The default option is the same as the previous version, and setting `logFC` parameter value of `measure_gene_stats` to `gene` will provide the `logFC` calculate by gene-level CPMs.
 
 ### April 14, 2020
 
-* Regarding [#6](https://github.com/LiuzLab/CB2/issues/6), now users can use `join_count_and_design` function. 
+* Regarding [#6](https://github.com/hyunhwan-jeong/CB2/issues/6), now users can use `join_count_and_design` function. 
 
 ### December 16, 2019
 
-* Regarding [#4](https://github.com/LiuzLab/CB2/issues/4), CB<sup>2</sup> now supports gzipped FASTQ file.
-* Regarding [#5](https://github.com/LiuzLab/CB2/issues/5), `calc_mappability()` provide `total_reads` and `mapped_reads` columns.
+* Regarding [#4](https://github.com/hyunhwan-jeong/CB2/issues/4), CB<sup>2</sup> now supports gzipped FASTQ file.
+* Regarding [#5](https://github.com/hyunhwan-jeong/CB2/issues/5), `calc_mappability()` provide `total_reads` and `mapped_reads` columns.
 
 ### July 2, 2019 
 
@@ -54,13 +54,13 @@ Installation Github version of CB<sup>2</sup> can be done using the following li
 
 ```r
 install.packages("devtools")
-devtools::install_github("LiuzLab/CB2")
+devtools::install_github("hyunhwan-jeong/CB2")
 ```
 
 Alternatively, here is a one-liner command line for the installation.
 
 ```
-Rscript -e "install.packages('devtools'); devtools::install_github('LiuzLab/CB2')"
+Rscript -e "install.packages('devtools'); devtools::install_github('hyunhwan-jeong/CB2')"
 ```
 
 ## A simple example how to use CB<sup>2</sup> in R

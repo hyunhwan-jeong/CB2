@@ -17,7 +17,7 @@ The data object is a list and contains below information:
 }
 }
 \source{
-\url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
+\url{https://pubmed.ncbi.nlm.nih.gov/27111720/}
 }
 \usage{
 data(Evers_CRISPRn_RT112)

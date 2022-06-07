@@ -15,7 +15,7 @@
 #'
 #' @usage data(Evers_CRISPRn_RT112)
 #'
-#' @source \url{https://www.ncbi.nlm.nih.gov/pubmed/27111720}
+#' @source \url{https://pubmed.ncbi.nlm.nih.gov/27111720/}
 "Evers_CRISPRn_RT112"
 
 
@@ -34,5 +34,5 @@
 #'
 #' @usage data(Sanson_CRISPRn_A375)
 #'
-#' @source \url{https://www.ncbi.nlm.nih.gov/pubmed/30575746}
+#' @source \url{https://pubmed.ncbi.nlm.nih.gov/30575746/}
 "Sanson_CRISPRn_A375"

@@ -15,7 +15,7 @@ The data object is a list and contains below information:
 }
 }
 \source{
-\url{https://www.ncbi.nlm.nih.gov/pubmed/30575746}
+\url{https://pubmed.ncbi.nlm.nih.gov/30575746/}
 }
 \usage{
 data(Sanson_CRISPRn_A375)

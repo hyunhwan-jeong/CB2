@@ -284,8 +284,8 @@ measure_sgrna_stats <- function(sgcount, design,
     sgcount_a <- as.matrix(sgcount[, group_a])
     sgcount_b <- as.matrix(sgcount[, group_b])
     
-    nmat_a <- rep.row(colSums(sgcount_a), nrow(sgcount_a))
-    nmat_b <- rep.row(colSums(sgcount_b), nrow(sgcount_b))
+    nmat_a <- rep_row(colSums(sgcount_a), nrow(sgcount_a))
+    nmat_b <- rep_row(colSums(sgcount_b), nrow(sgcount_b))
     est_a <- fit_ab(sgcount_a, nmat_a)
     est_b <- fit_ab(sgcount_b, nmat_b)
     

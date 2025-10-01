@@ -9,6 +9,10 @@ We provide CB<sup>2</sup> as a R package, and the interal algorithms of CB<sup>2
 
 ## Update
 
+### Oct 1, 2025
+
+Update the C++ dependency 
+
 ### Jun 7, 2022
 
 A bug fix regarding [#14](https://github.com/hyunhwan-jeong/CB2/issues/14). Thanks @DaneseAnna for reporting the issue.

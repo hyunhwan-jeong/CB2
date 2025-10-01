@@ -1,4 +1,10 @@
-rep.row <- function(x, n) matrix(rep(x, each = n), nrow = n)
+#' Repeat a row
+#'
+#' @param x A vector to repeat
+#' @param n Number of repetitions
+#' @return A matrix with `n` copies of `x`
+#' @export
+rep_row <- function(x, n) matrix(rep(x, each = n), nrow = n)
 
 #' A function to normalize sgRNA read counts.
 #' 
@@ -16,7 +22,7 @@ rep.row <- function(x, n) matrix(rep(x, each = n), nrow = n)
 #' @export
 get_CPM <- function(sgcount) {
     cols <- which(sapply(sgcount, class) == "numeric")
-    nmat <- rep.row(colSums(sgcount[,cols]), nrow(sgcount[,cols]))
+    nmat <- rep_row(colSums(sgcount[,cols]), nrow(sgcount[,cols]))
     sgcount[,cols] <- sgcount[,cols]/nmat * 10^6
     sgcount
 }

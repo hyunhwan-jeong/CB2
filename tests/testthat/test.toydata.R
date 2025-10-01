@@ -25,8 +25,6 @@ for(g in c("Low", "High", "Base")) {
   }
 }
 
-rep.row <- function(x,n) matrix(rep(x,each=n),nrow=n)
-
 
 test_that("A very simple sanity check", {
   expect_length((cb2_count <- run_sgrna_quant(FASTA, df_design)), 3)

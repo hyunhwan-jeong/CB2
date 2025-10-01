@@ -2,7 +2,7 @@
 #include "AdaptiveHash.h"
 using namespace std;
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::plugins(cpp17)]]
 using namespace arma;
 
 //' A C++ function to quantify sgRNA abundance from NGS samples.
